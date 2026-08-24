@@ -1,0 +1,51 @@
+/* ============================================================
+   layout/footer.css — Pie de página
+   ============================================================ */
+
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-alt);
+  padding-block: var(--space-7);
+}
+
+.footer__inner {
+  display: grid;
+  gap: var(--space-6);
+
+  @media (min-width: 48rem) {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.footer__love {
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-2);
+}
+
+.footer__note {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-muted);
+  max-width: 48ch;
+}
+
+.footer__back {
+  display: inline-block;
+  margin-top: var(--space-4);
+}
+
+.footer__links-title {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.footer__links {
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--font-size-body-sm);
+}

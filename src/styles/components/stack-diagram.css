@@ -1,0 +1,78 @@
+/* ============================================================
+   components/stack-diagram.css — Frames y diagrama estático
+   ============================================================ */
+
+.frame {
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-body-sm);
+  text-align: center;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 0 var(--color-border);
+
+  }
+
+/* Frame iluminado por el reflector de this */
+.frame--lit {
+  border-color: var(--color-accent);
+  box-shadow:
+    0 0 0 1px var(--color-accent),
+    0 0 20px color-mix(in srgb, var(--color-accent) 25%, transparent);
+}
+
+.stack-diagram {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: stretch;
+  padding: var(--space-6);
+  max-width: 100%;
+  overflow-x: auto;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  /* Selectores explícitos: lightningcss downlevel compila
+     &__suffix como __suffix.parent (selector muerto). */
+
+  .stack-diagram__rail {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-block: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-caption);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .stack-diagram__stack {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: center;
+    max-width: 22rem;
+
+    .frame {
+      width: 100%;
+    }
+  }
+
+  .stack-diagram__caption {
+    grid-column: 1 / -1;
+    margin-top: var(--space-3);
+    font-size: var(--font-size-body-sm);
+    color: var(--color-text-muted);
+  }
+}
+
+.rail__pop {
+  color: var(--color-text-muted);
+}
+
+.rail__push {
+  color: var(--color-accent-strong);
+}

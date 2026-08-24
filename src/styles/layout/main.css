@@ -1,0 +1,91 @@
+/* ============================================================
+   layout/main.css — Contenedor, secciones y bloques de lección
+   ============================================================ */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.section {
+  padding-block: var(--space-9);
+}
+
+/* Variante top-level (mismo elemento que .section) */
+.section--grid {
+  background-color: var(--color-bg-alt);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.section__header {
+  display: grid;
+  gap: var(--space-3);
+  margin-bottom: var(--space-7);
+}
+
+.section__num {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-body-sm);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-accent-strong);
+}
+
+.section__lede {
+  font-size: var(--font-size-heading-1);
+  line-height: var(--line-height-base);
+  color: var(--color-text-muted);
+  max-width: 46ch;
+}
+
+.section h3 {
+  margin-top: var(--space-7);
+  margin-bottom: var(--space-4);
+}
+
+/* Bloques "código + explicación" en 2 columnas (DESIGN.md §1.4) */
+.split {
+  display: grid;
+  gap: var(--space-6);
+  align-items: start;
+
+  @media (min-width: 52rem) {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+  }
+}
+
+/* Columna de código del split: apila varios bloques + hint */
+.split__code {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/* Ritmo vertical de los bloques de lección */
+.rules-grid,
+.stack-diagram,
+.stack-demo,
+.strict-demo,
+.code-split,
+.table-wrap,
+.split,
+.callout,
+.mistakes,
+.next-step {
+  margin-top: var(--space-5);
+}
+
+.prose {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 68ch;
+
+  & > p {
+    max-width: 68ch;
+  }
+}
