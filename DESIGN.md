@@ -9,7 +9,7 @@
 ## 1. PROJECT IDENTITY & DESIGN PHILOSOPHY
 
 ### 1.1 Project Purpose
-Landing page educativa. Enseña a estudiantes principiantes de JS: **Contexto de Ejecución** y **`this`** (reglas pre-ES6) como base para entender POO en JS.
+Landing page educativa. Enseña a estudiantes principiantes de JS: **Contexto de Ejecución** y **`this`** (mecánica POO pre-ES6: constructores + `prototype`; ejemplos con sintaxis moderna `let`/`const`) como base para entender POO en JS.
 
 ### 1.2 Primary Audience
 Estudiantes que empiezan JS. Sin experiencia previa en contextos/`this`. Lectura en pantalla y proyección en clase.
@@ -139,6 +139,12 @@ Sections in order, single page `index.html` (`lang="es"`):
 6. **Resumen (cheat sheet)** — 4 reglas + strict + errores comunes (`setTimeout`, extraer métodos); cierre: "siguiente paso: clases ES6"
 
 Code comments: Spanish. Interactive: stack stepper + strict toggle (2 únicos).
+
+**Sintaxis de ejemplos:** `let`/`const` (moderna). Única excepción: demo de hoisting usa `var` (enseña el contraste). Fase Creación: `var` hoistea (inicializa `undefined`); `let`/`const` hoistean sin inicializar (TDZ → `ReferenceError`); enlazar con modo estricto (ambos combaten errores silenciosos).
+
+**Ejemplos reproducibles:** cada bloque autocontenido — definiciones + llamadas + salida esperada en comentario (`// → ...`). Pegable en consola/Node sin editar. Caption: "pégalo en la consola".
+
+**Cierre `.next-step`:** `class`/`constructor`/`super`/`new` en contraste AA sobre fondo `--color-primary` (base.css `code` = `--color-primary` → invisible. Fix: `.next-step code` con tinte claro).
 
 ---
 
