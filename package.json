@@ -1,0 +1,19 @@
+{
+  "name": "opencode-tutorial",
+  "version": "1.11.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "setup": "npx @colbymchenry/codegraph init && npx playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "vite": "^8.1.1"
+  },
+  "dependencies": {
+    "sanitize-html": "^2.17.5"
+  }
+}
