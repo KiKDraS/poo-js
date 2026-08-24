@@ -217,9 +217,10 @@
               <code>ReferenceError</code>.</p>
             <p>Un consejo: escribe las declaraciones arriba por legibilidad, pero ahora ya sabes por qué JavaScript no
               te lo exige.</p>
-            <p>El <strong>modo estricto</strong> existe por la misma razón: convertir errores silenciosos (como el
-              <code>undefined</code> del hoisting de <code>var</code> o las globales implícitas) en errores
-              visibles. <a href="#estricto">Ver sección 03 →</a></p>
+            <p>El <strong>modo estricto</strong> existe para lo mismo: convertir errores silenciosos (como las
+              globales implícitas) en errores visibles. Y la <em>zona muerta temporal</em> hace lo propio con
+              <code>let</code>/<code>const</code>: usar una variable antes de su declaración no falla en silencio,
+              lanza un <code>ReferenceError</code>. <a href="#estricto">Ver sección 03 →</a></p>
           </div>
         </div>
 
