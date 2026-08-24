@@ -1,0 +1,42 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.playwright-mcp
+test-results
+.codegraph/
+
+# Local opencode tooling (not project files)
+.opencode/commands/
+.opencode/skills/caveman/
+.opencode/skills/caveman-commit/
+.opencode/skills/caveman-compress/
+.opencode/skills/caveman-help/
+.opencode/skills/caveman-review/
+
+# Environment variables
+.env
+
+# Secrets
+.opencode/secrets/
