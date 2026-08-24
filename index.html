@@ -46,6 +46,7 @@
           <li><a class="toc__link" href="#this">this</a></li>
           <li><a class="toc__link" href="#estricto">Estricto</a></li>
           <li><a class="toc__link" href="#poo">POO</a></li>
+          <li><a class="toc__link" href="#clases">Clases</a></li>
           <li><a class="toc__link" href="#resumen">Resumen</a></li>
         </ol>
       </nav>
@@ -490,11 +491,142 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
       </div>
     </section>
 
-    <!-- ============ 05 · RESUMEN ============ -->
+    <!-- ============ 05 · CLASES ES6 ============ -->
+    <section class="section" id="clases" aria-labelledby="clases-title">
+      <div class="container">
+        <header class="section__header" data-reveal>
+          <p class="section__num">05 · Clases ES6</p>
+          <h2 id="clases-title">Clases ES6: la POO moderna</h2>
+          <p class="section__lede">La sintaxis que empaqueta todo lo pre-ES6 que ya viste: <code>new</code>,
+            <code>prototype</code> y <code>this</code> siguen ahí, con versión de cada pieza.</p>
+        </header>
+
+        <div class="prose" data-reveal>
+          <p>Las clases de ES6 no traen un motor nuevo: son <strong>azúcar sintáctico</strong> sobre lo que ya
+            conoces. <code>class</code> empaqueta el patrón constructor + <code>prototype</code> en una sintaxis
+            limpia, y <code>this</code> dentro de un método sigue siendo la instancia (regla con
+            <code>new</code>). Lo único que no es azúcar es <code>#</code>: privacidad real, no la convención
+            <code>_</code>.</p>
+        </div>
+
+        <div class="split" data-reveal>
+          <div class="split__code">
+            <pre class="code-block"><code><span class="tok-cmt">// ===== CLASE BASE — class: ES2015 (ES6) =====</span>
+<span class="tok-kw">class</span> <span class="tok-fn">Persona</span> {
+  <span class="tok-prop">planeta</span> = <span class="tok-str">"Tierra"</span>;            <span class="tok-cmt">// Campo público — ES2022</span>
+
+  <span class="tok-kw">#</span><span class="tok-prop">secreto</span> = <span class="tok-str">"café con leche"</span>;   <span class="tok-cmt">// Campo privado — ES2022</span>
+
+  <span class="tok-fn">constructor</span>(nombre, edad) {    <span class="tok-cmt">// constructor — ES2015 (ES6)</span>
+    <span class="tok-kw">this</span>.<span class="tok-prop">nombre</span> = nombre;
+    <span class="tok-kw">this</span>.<span class="tok-prop">edad</span> = edad;
+  }
+
+  <span class="tok-fn">saludar</span>() {                    <span class="tok-cmt">// Método de instancia — ES2015 (ES6)</span>
+    <span class="tok-kw">return</span> <span class="tok-str">`Hola, soy ${</span><span class="tok-kw">this</span>.<span class="tok-prop">nombre</span><span class="tok-str">}`</span>;
+  }
+
+  <span class="tok-kw">get</span> <span class="tok-prop">secreto</span>() {                <span class="tok-cmt">// get — ES5 · en clase: ES2015</span>
+    <span class="tok-kw">return</span> <span class="tok-kw">this</span>.<span class="tok-prop">#secreto</span>;
+  }
+
+  <span class="tok-kw">#</span><span class="tok-fn">revelar</span>() {                   <span class="tok-cmt">// Método privado — ES2022</span>
+    <span class="tok-kw">return</span> <span class="tok-kw">this</span>.<span class="tok-prop">#secreto</span> + <span class="tok-str">" por la mañana"</span>;
+  }
+
+  <span class="tok-kw">static</span> <span class="tok-fn">crear</span>(nombre) {         <span class="tok-cmt">// Método estático — ES2015 (ES6)</span>
+    <span class="tok-kw">return</span> <span class="tok-kw">new</span> <span class="tok-fn">Persona</span>(nombre, <span class="tok-num">0</span>);
+  }
+}
+
+<span class="tok-cmt">// ===== HERENCIA — extends/super: ES2015 (ES6) =====</span>
+<span class="tok-kw">class</span> <span class="tok-fn">Estudiante</span> <span class="tok-kw">extends</span> <span class="tok-fn">Persona</span> {
+  <span class="tok-fn">constructor</span>(nombre, edad, curso) {
+    <span class="tok-kw">super</span>(nombre, edad);         <span class="tok-cmt">// constructor de Persona</span>
+    <span class="tok-kw">this</span>.<span class="tok-prop">curso</span> = curso;
+  }
+
+  <span class="tok-fn">saludar</span>() {                    <span class="tok-cmt">// Sobrescritura (override)</span>
+    <span class="tok-kw">return</span> <span class="tok-str">`${</span><span class="tok-kw">super</span>.<span class="tok-fn">saludar</span>()<span class="tok-str">} — estudio ${</span><span class="tok-kw">this</span>.<span class="tok-prop">curso</span><span class="tok-str">}`</span>;
+  }
+}
+
+<span class="tok-kw">const</span> ana = <span class="tok-kw">new</span> <span class="tok-fn">Estudiante</span>(<span class="tok-str">"Ana"</span>, <span class="tok-num">25</span>, <span class="tok-str">"JavaScript"</span>);
+ana.<span class="tok-fn">saludar</span>();      <span class="tok-cmt">// "Hola, soy Ana — estudio JavaScript"</span>
+ana.<span class="tok-prop">secreto</span>;        <span class="tok-cmt">// "café con leche" (getter)</span>
+ana.<span class="tok-kw">#</span><span class="tok-prop">secreto</span>;       <span class="tok-cmt">// SyntaxError — # es privado de verdad (ES2022)</span></code></pre>
+            <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
+          </div>
+          <div class="prose split__body">
+            <p>Todo lo que ya viste con <code>new</code>, <code>prototype</code> y <code>this</code> sigue aquí,
+              con otra sintaxis. <code>new Estudiante("Ana", 25, "JavaScript")</code> crea el objeto,
+              <code>this</code> dentro del <code>constructor</code> es la instancia (regla con <code>new</code>) y
+              los métodos viven en el <code>prototype</code> compartido: la clase es azúcar, el motor es el
+              mismo.</p>
+            <p>Lo que <em>no</em> es azúcar: <code>#</code>. La privacidad real no es la convención
+              <code>_</code> — un guion bajo solo avisa, no protege. <code>ana.#secreto</code> lanza
+              <code>SyntaxError</code> al parsear: ni siquiera llega a ejecutarse.</p>
+            <p><code>static</code> cuelga el método de la clase, no de la instancia:
+              <code>Persona.crear("Ana")</code>, no <code>ana.crear()</code>. Y <code>extends</code> encadena
+              prototipos: <code>Estudiante</code> hereda de <code>Persona</code>, y <code>super</code> llama al
+              constructor o al método del padre.</p>
+          </div>
+        </div>
+
+        <div class="callout callout--pattern" data-reveal>
+          <p class="callout__label">Patrón</p>
+          <p class="callout__text"><strong>Clases = azúcar, debajo sigue el motor.</strong> <code>new</code> crea
+            el objeto, <code>this</code> = quien contesta (la instancia), métodos en
+            <code>prototype</code>. La clase solo lo empaqueta con sintaxis limpia.</p>
+          <div class="spotlight" aria-hidden="true">
+            <div class="spotlight__beam"></div>
+            <div class="spotlight__owner">contesta: ana · instancia de Estudiante</div>
+          </div>
+        </div>
+
+        <h3 data-reveal>Versiones de ECMAScript</h3>
+        <div class="table-wrap" data-reveal>
+          <table class="sheet">
+            <caption class="visually-hidden">Versiones de ECMAScript de las características de clase</caption>
+            <thead>
+              <tr>
+                <th scope="col">Característica</th>
+                <th scope="col">Versión</th>
+                <th scope="col">Año</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><code>class</code>, <code>constructor</code>, <code>extends</code>, <code>super</code>, <code>static</code></th>
+                <td>ES6 · ES2015</td>
+                <td>2015</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>get</code> / <code>set</code></th>
+                <td>ES5 (2009) · en clase: ES6</td>
+                <td>2009 / 2015</td>
+              </tr>
+              <tr>
+                <th scope="row">Campos públicos</th>
+                <td>ES2022 (ES13)</td>
+                <td>2022</td>
+              </tr>
+              <tr>
+                <th scope="row">Campos y métodos privados (<code>#</code>)</th>
+                <td>ES2022 (ES13)</td>
+                <td>2022</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 · RESUMEN ============ -->
     <section class="section section--grid" id="resumen" aria-labelledby="resumen-title">
       <div class="container">
         <header class="section__header" data-reveal>
-          <p class="section__num">05 · Resumen</p>
+          <p class="section__num">06 · Resumen</p>
           <h2 id="resumen-title">Resumen (cheat sheet)</h2>
           <p class="section__lede">Todo lo esencial en dos tablas, los errores más comunes y el siguiente paso.</p>
         </header>
@@ -594,11 +726,10 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
         </ul>
 
         <div class="next-step" data-reveal>
-          <h3>Siguiente paso: las clases ES6</h3>
-          <p>Las clases de ES6 (<code>class</code>, <code>constructor</code>, <code>super</code>) hacen todo esto por
-            ti: el <code>new</code>, el prototipo y el <code>this</code> de la instancia quedan empaquetados. Pero
-            ahora ya sabes qué hay debajo — y cuando un método pierda su <code>this</code>, sabrás exactamente por
-            qué.</p>
+          <h3>Siguiente paso: TypeScript</h3>
+          <p>TypeScript añade tipos a las clases: <code>implements</code>, <code>abstract</code> y
+            <code>public</code>/<code>private</code>/<code>protected</code> en la firma. Ya tienes la base:
+            <code>this</code>, <code>prototype</code> y <code>new</code> funcionan igual.</p>
         </div>
       </div>
     </section>
@@ -609,8 +740,7 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
     <div class="container footer__inner">
       <div>
         <p class="footer__love">Hecho con ♥ para estudiantes de JavaScript</p>
-        <p class="footer__note">Lección: Contexto de Ejecución y <code>this</code> — reglas pre-ES6 como base para
-          entender la POO en JavaScript.</p>
+        <p class="footer__note">Lección: Contexto de Ejecución, <code>this</code> y clases ES6 — de la mecánica pre-ES6 a la POO moderna.</p>
         <a class="footer__back" href="#inicio">Volver arriba ↑</a>
       </div>
       <nav aria-label="Referencias de documentación">
