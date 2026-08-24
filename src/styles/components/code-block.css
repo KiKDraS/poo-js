@@ -55,6 +55,12 @@
   transition: color var(--duration-base) var(--ease-standard);
 }
 
+/* Caption bajo bloques reproducibles (DESIGN.md §1.5) */
+.code-block__hint {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
 /* Tokenización manual de sintaxis (paleta DESIGN.md §2.1) */
 .tok-kw {
   color: var(--syntax-keyword);

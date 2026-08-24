@@ -59,6 +59,13 @@
   }
 }
 
+/* Columna de código del split: apila varios bloques + hint */
+.split__code {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
 /* Ritmo vertical de los bloques de lección */
 .rules-grid,
 .stack-diagram,

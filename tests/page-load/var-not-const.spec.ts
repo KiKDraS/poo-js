@@ -15,28 +15,29 @@ test.describe('Carga de página', () => {
     checkErrors();
   });
 
-  test('Contenido de enseñanza y ejemplos pre-ES6 (var, no const)', async ({
+  test('Contenido de enseñanza y ejemplos modernos (let/const, var solo en hoisting)', async ({
     page,
   }) => {
     await page.goto('/');
 
     // 1. Contar <span class="tok-kw">var</span> en el HTML renderizado
-    // Nota: la página real tiene 5 tokens var (hoisting, Reglas 2-4 y #poo);
-    // el plan citaba "≥7" pero sus propios ejemplos enumeran 4. El umbral ≥5
-    // vigila que ningún ejemplo var desaparezca.
+    // Contrato DESIGN.md: ejemplos con let/const; única excepción = demo de hoisting
+    // (2 bloques: hoisting de var + contraste TDZ).
     const varCount = await page.evaluate(
       () =>
         [...document.querySelectorAll('span.tok-kw')].filter(
           (el) => el.textContent === 'var'
         ).length
     );
-    expect(varCount).toBeGreaterThanOrEqual(5);
+    expect(varCount).toBe(2);
 
     const codeBlocks = await page.locator('.code-block').allTextContents();
     const code = codeBlocks.join('\n');
-    expect(code).toContain('var ana = { nombre: "Ana" };'); // Regla 2
-    expect(code).toContain('var fija = foo.bind(objeto);'); // Regla 3
-    expect(code).toContain('var ana = new Persona("Ana");'); // Regla 4 y #poo
+    expect(code).toContain('const ana = { nombre: "Ana", saludar:'); // Regla 2
+    expect(code).toContain('const fija = foo.bind(objeto);'); // Regla 3
+    expect(code).toContain('const ana = new Persona("Ana");'); // Regla 4 y #poo
+    expect(code).toContain('let apodo = "Anita";'); // TDZ (hoisting)
+    expect(code).toContain('var despedida = "Chau";'); // hoisting (excepción)
 
     // 2. Buscar el token const en bloques de código
     const constCount = await page.evaluate(
@@ -45,7 +46,7 @@ test.describe('Carga de página', () => {
           (el) => el.textContent === 'const'
         ).length
     );
-    expect(constCount).toBe(0);
+    expect(constCount).toBe(5);
 
     // 3. Verificar strings clave en el texto visible
     await expect(page.locator('h2#contexto-title')).toHaveText(

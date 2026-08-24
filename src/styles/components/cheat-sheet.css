@@ -95,4 +95,15 @@
     max-width: 60ch;
     color: color-mix(in srgb, var(--color-text-inverse) 82%, transparent);
   }
+
+  /* base.css pinta code con --color-primary → invisible sobre este fondo.
+     Tinte fijo por modo con contraste AA sobre --color-primary (verificado:
+     claro #FFD9B0/1E3A5F = 8.6:1 · oscuro #10151F/5B8DD9 = 5.4:1) */
+  code {
+    color: #ffd9b0;
+
+    @media (prefers-color-scheme: dark) {
+      color: #10151f;
+    }
+  }
 }

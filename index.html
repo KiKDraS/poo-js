@@ -167,7 +167,10 @@
               <tr>
                 <th scope="row">Creación</th>
                 <td>Se crea el scope: las variables y las funciones se registran. Hay <strong>hoisting</strong> de
-                  <code>var</code> y de las declaraciones de función. Se define <code>this</code> del contexto.</td>
+                  <code>var</code> (inicializada con <code>undefined</code>) y de las declaraciones de función.
+                  <code>let</code>/<code>const</code> también hoistean, pero <strong>sin inicialización</strong>:
+                  están en la <em>zona muerta temporal</em> (TDZ) hasta que su línea corre; usarlas antes lanza un
+                  <code>ReferenceError</code>. Se define <code>this</code> del contexto.</td>
               </tr>
               <tr>
                 <th scope="row">Ejecución</th>
@@ -180,19 +183,27 @@
 
         <h3 data-reveal>Hoisting: las declaraciones se adelantan</h3>
         <div class="split" data-reveal>
-          <pre class="code-block split__code"><code><span class="tok-cmt">// Fase de creación: "despedida" existe (hoisting de var),</span>
+          <div class="split__code">
+            <pre class="code-block"><code><span class="tok-cmt">// Fase de creación: "despedida" existe (hoisting de var),</span>
 <span class="tok-cmt">// pero todavía no tiene valor.</span>
-<span class="tok-fn">console</span>.<span class="tok-prop">log</span>(despedida); <span class="tok-cmt">// undefined</span>
+<span class="tok-fn">console</span>.<span class="tok-prop">log</span>(despedida); <span class="tok-cmt">// → undefined</span>
 
 <span class="tok-cmt">// Las declaraciones de función se suben completas:</span>
 <span class="tok-cmt">// saludar() ya se puede llamar aquí.</span>
-<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola"</span>
+<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// → "Hola"</span>
 
 <span class="tok-kw">var</span> despedida = <span class="tok-str">"Chau"</span>; <span class="tok-cmt">// la asignación espera a la fase de ejecución</span>
 
 <span class="tok-kw">function</span> <span class="tok-fn">saludar</span>() {
   <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-str">"Hola"</span>);
 }</code></pre>
+            <pre class="code-block code-block--mini"><code><span class="tok-cmt">// var hoistea e inicializa con undefined...</span>
+<span class="tok-fn">console</span>.<span class="tok-prop">log</span>(despedida); <span class="tok-cmt">// → undefined — var existe (hoisting)</span>
+<span class="tok-fn">console</span>.<span class="tok-prop">log</span>(apodo); <span class="tok-cmt">// → ReferenceError — let está en la TDZ</span>
+<span class="tok-kw">var</span> despedida = <span class="tok-str">"Chau"</span>;
+<span class="tok-kw">let</span> apodo = <span class="tok-str">"Anita"</span>;</code></pre>
+            <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
+          </div>
           <div class="prose split__body">
             <p>En la fase de creación, JavaScript «sube» (hoisting) las declaraciones de <code>var</code> y las
               declaraciones de función al principio de su contexto. Las asignaciones, en cambio, esperan a la fase de
@@ -200,8 +211,15 @@
             <p>Por eso <code>console.log(despedida)</code> no lanza un error: la variable ya existe (vale
               <code>undefined</code>). Y por eso <code>saludar()</code> funciona antes de su definición: la función
               completa ya fue registrada.</p>
+            <p><code>var</code> hoistea e inicializa con <code>undefined</code>; <code>let</code> y
+              <code>const</code> también hoistean, pero <strong>no se inicializan</strong>: viven en la
+              <em>zona muerta temporal</em> (TDZ) hasta que su línea se ejecuta. Usarlas antes lanza un
+              <code>ReferenceError</code>.</p>
             <p>Un consejo: escribe las declaraciones arriba por legibilidad, pero ahora ya sabes por qué JavaScript no
               te lo exige.</p>
+            <p>El <strong>modo estricto</strong> existe por la misma razón: convertir errores silenciosos (como el
+              <code>undefined</code> del hoisting de <code>var</code> o las globales implícitas) en errores
+              visibles. <a href="#estricto">Ver sección 03 →</a></p>
           </div>
         </div>
 
@@ -243,7 +261,8 @@
               <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">foo</span>() {
   <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>);
 }
-<span class="tok-fn">foo</span>(); <span class="tok-cmt">// llamada suelta</span></code></pre>
+<span class="tok-fn">foo</span>(); <span class="tok-cmt">// window (normal) · undefined (estricto)</span></code></pre>
+              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
               <p class="rule-card__answer"><code>window</code> en modo normal · <code>undefined</code> en modo estricto
               </p>
@@ -261,8 +280,9 @@
             </div>
             <div class="rule-card__body">
               <p>Llamada de método: el objeto va a la izquierda del punto.</p>
-              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">var</span> ana = { <span class="tok-prop">nombre</span>: <span class="tok-str">"Ana"</span> };
-ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// this = ana</span></code></pre>
+              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">const</span> ana = { <span class="tok-prop">nombre</span>: <span class="tok-str">"Ana"</span>, <span class="tok-prop">saludar</span>: <span class="tok-kw">function</span> () { <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>.<span class="tok-prop">nombre</span>); } };
+ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — this = ana</span></code></pre>
+              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
               <p class="rule-card__answer"><code>objeto</code> — el que está a la izquierda del punto</p>
             </div>
@@ -280,9 +300,13 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// this = ana</
             <div class="rule-card__body">
               <p>Forzada con <code>call</code>, <code>apply</code> o <code>bind</code>: tú decides quién es
                 <code>this</code>.</p>
-              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-fn">foo</span>.<span class="tok-prop">call</span>(objeto);
-<span class="tok-fn">foo</span>.<span class="tok-prop">apply</span>(objeto, [<span class="tok-num">1</span>, <span class="tok-num">2</span>]);
-<span class="tok-kw">var</span> fija = <span class="tok-fn">foo</span>.<span class="tok-prop">bind</span>(objeto);</code></pre>
+              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">foo</span>() { <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>.<span class="tok-prop">nombre</span>); }
+<span class="tok-kw">const</span> objeto = { <span class="tok-prop">nombre</span>: <span class="tok-str">"objeto"</span> };
+<span class="tok-fn">foo</span>.<span class="tok-prop">call</span>(objeto); <span class="tok-cmt">// "objeto"</span>
+<span class="tok-fn">foo</span>.<span class="tok-prop">apply</span>(objeto, [<span class="tok-num">1</span>, <span class="tok-num">2</span>]); <span class="tok-cmt">// "objeto"</span>
+<span class="tok-kw">const</span> fija = <span class="tok-fn">foo</span>.<span class="tok-prop">bind</span>(objeto);
+<span class="tok-fn">fija</span>(); <span class="tok-cmt">// "objeto"</span></code></pre>
+              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
               <p class="rule-card__answer">el objeto que pasas como primer argumento</p>
             </div>
@@ -302,7 +326,9 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// this = ana</
               <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">Persona</span>(nombre) {
   <span class="tok-kw">this</span>.<span class="tok-prop">nombre</span> = nombre;
 }
-<span class="tok-kw">var</span> ana = <span class="tok-kw">new</span> <span class="tok-fn">Persona</span>(<span class="tok-str">"Ana"</span>);</code></pre>
+<span class="tok-kw">const</span> ana = <span class="tok-kw">new</span> <span class="tok-fn">Persona</span>(<span class="tok-str">"Ana"</span>);
+<span class="tok-fn">console</span>.<span class="tok-prop">log</span>(ana.<span class="tok-prop">nombre</span>); <span class="tok-cmt">// "Ana"</span></code></pre>
+              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
               <p class="rule-card__answer">el objeto nuevo que acaba de crear <code>new</code></p>
             </div>
@@ -419,7 +445,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// this = ana</
         </div>
 
         <div class="split" data-reveal>
-          <pre class="code-block split__code"><code><span class="tok-kw">function</span> <span class="tok-fn">Persona</span>(nombre) {
+          <div class="split__code">
+            <pre class="code-block"><code><span class="tok-kw">function</span> <span class="tok-fn">Persona</span>(nombre) {
   <span class="tok-kw">this</span>.<span class="tok-prop">nombre</span> = nombre; <span class="tok-cmt">// this = la instancia nueva</span>
 }
 
@@ -427,8 +454,10 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// this = ana</
   <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-str">"Hola, soy "</span> + <span class="tok-kw">this</span>.<span class="tok-prop">nombre</span>);
 };
 
-<span class="tok-kw">var</span> ana = <span class="tok-kw">new</span> <span class="tok-fn">Persona</span>(<span class="tok-str">"Ana"</span>);
+<span class="tok-kw">const</span> ana = <span class="tok-kw">new</span> <span class="tok-fn">Persona</span>(<span class="tok-str">"Ana"</span>);
 ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy Ana"</span></code></pre>
+            <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
+          </div>
           <div class="prose split__body">
             <p><code>new Persona("Ana")</code> hace tres cosas: crea un objeto nuevo, lo asigna a <code>this</code>
               dentro de la función y lo devuelve. Por eso <code>this.nombre = nombre</code> llena la instancia:
@@ -538,9 +567,9 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
         <ul class="mistakes">
           <li class="mistakes__item" data-reveal>
             <p class="mistakes__title"><strong>Extraer un método y perder <code>this</code></strong></p>
-            <p class="mistakes__fix"><code>var f = ana.saludar; f();</code> — al guardar el método en una variable,
+            <p class="mistakes__fix"><code>const f = ana.saludar; f();</code> — al guardar el método en una variable,
               la llamada ya no tiene objeto delante: <code>this</code> pasa a ser <code>window</code> (regla por
-              defecto). Solución: <code>var f = ana.saludar.bind(ana);</code></p>
+              defecto). Solución: <code>const f = ana.saludar.bind(ana);</code></p>
           </li>
           <li class="mistakes__item" data-reveal>
             <p class="mistakes__title"><strong>Pasar un método a <code>setTimeout</code></strong></p>
