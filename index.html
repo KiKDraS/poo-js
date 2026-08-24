@@ -124,7 +124,7 @@
         <h3 data-reveal>Pruébalo: ejecución paso a paso</h3>
         <div class="prose" data-reveal>
           <p>Este es el corazón de la lección. Pulsa <strong>Ejecutar paso a paso</strong> y observa cómo se crean y se
-            destruyen los contextos. A la derecha tienes la pila; la línea de código iluminada te dice qué se está
+            destruyen los contextos. A la derecha tienes la pila; la línea de código resaltada te dice qué se está
             ejecutando en cada momento.</p>
         </div>
 
@@ -245,16 +245,17 @@
         <header class="section__header" data-reveal>
           <p class="section__num">02 · this y las 4 reglas</p>
           <h2 id="this-title"><code>this</code> y las 4 reglas</h2>
-          <p class="section__lede">El reflector del escenario: <code>this</code> ilumina al objeto dueño del contexto
-            actual. Cambia la llamada, cambia el reflector.</p>
+          <p class="section__lede">La llamada: <code>this</code> es quien contesta. Cambia a quién llamas, cambia quién
+            contesta.</p>
         </header>
 
         <div class="prose" data-reveal>
           <p><code>this</code> es <strong>el objeto dueño del contexto de ejecución actual</strong>. No es la función.
             No es el scope. Es el objeto que «recibe» la llamada.</p>
-          <p>Piensa en un <strong>reflector</strong> sobre un escenario: <code>this</code> señala al objeto que está
-            iluminado en ese momento. En cada ejemplo de abajo, el haz te muestra quién es <code>this</code>. La
-            pregunta no es «¿qué es <code>this</code>?» sino «¿<em>cómo</em> se llamó la función?».</p>
+          <p>Piensa en una llamada telefónica: cuando escribes <code>ana.saludar()</code>, es como llamar al teléfono de
+            ana — y quien contesta es ana. <code>this</code> es siempre quien contesta la llamada. No importa dónde se
+            definió la función: importa a quién llamaste. En cada ejemplo de abajo, el haz te muestra quién contesta.
+            La pregunta no es «¿qué es <code>this</code>?» sino «¿a quién le llamaste?».</p>
         </div>
 
         <div class="rules-grid">
@@ -271,12 +272,12 @@
 <span class="tok-fn">foo</span>(); <span class="tok-cmt">// window (normal) · undefined (estricto)</span></code></pre>
               <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
-              <p class="rule-card__answer"><code>window</code> en modo normal · <code>undefined</code> en modo estricto
-              </p>
+              <p class="rule-card__answer">contesta la centralita global — <code>window</code> en modo normal ·
+                <code>undefined</code> en modo estricto</p>
             </div>
             <div class="spotlight" aria-hidden="true">
               <div class="spotlight__beam"></div>
-              <div class="spotlight__owner">window / undefined</div>
+              <div class="spotlight__owner">contesta: window / nadie (undefined)</div>
             </div>
           </article>
 
@@ -291,11 +292,11 @@
 ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — this = ana</span></code></pre>
               <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
-              <p class="rule-card__answer"><code>objeto</code> — el que está a la izquierda del punto</p>
+              <p class="rule-card__answer">contesta el objeto a la izquierda del punto</p>
             </div>
             <div class="spotlight" aria-hidden="true">
               <div class="spotlight__beam"></div>
-              <div class="spotlight__owner">ana</div>
+              <div class="spotlight__owner">contesta: ana</div>
             </div>
           </article>
 
@@ -315,11 +316,11 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
 <span class="tok-fn">fija</span>(); <span class="tok-cmt">// "objeto"</span></code></pre>
               <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
-              <p class="rule-card__answer">el objeto que pasas como primer argumento</p>
+              <p class="rule-card__answer">contesta el objeto que pasas como primer argumento</p>
             </div>
             <div class="spotlight" aria-hidden="true">
               <div class="spotlight__beam"></div>
-              <div class="spotlight__owner">el objeto que pasas</div>
+              <div class="spotlight__owner">contesta: el objeto que pasas</div>
             </div>
           </article>
 
@@ -337,11 +338,11 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
 <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(ana.<span class="tok-prop">nombre</span>); <span class="tok-cmt">// "Ana"</span></code></pre>
               <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
-              <p class="rule-card__answer">el objeto nuevo que acaba de crear <code>new</code></p>
+              <p class="rule-card__answer">contesta la instancia nueva que acaba de crear <code>new</code></p>
             </div>
             <div class="spotlight" aria-hidden="true">
               <div class="spotlight__beam"></div>
-              <div class="spotlight__owner">el objeto nuevo</div>
+              <div class="spotlight__owner">contesta: la instancia nueva</div>
             </div>
           </article>
         </div>
@@ -351,7 +352,7 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
           <p class="callout__text">Si dos reglas se pelean, gana siempre la de mayor jerarquía:
             <strong><code>new</code> &gt; explícita &gt; implícita &gt; por defecto</strong>. Ejemplo: en
             <code>objeto.metodo.call(otro)</code> hay llamada de método (implícita) <em>y</em> <code>call</code>
-            (explícita). Gana la explícita: <code>this</code> = <code>otro</code>.</p>
+            (explícita). Gana la explícita: suena el teléfono de <code>otro</code>.</p>
         </div>
       </div>
     </section>
@@ -480,10 +481,10 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
         <div class="callout callout--pattern" data-reveal>
           <p class="callout__label">Patrón</p>
           <p class="callout__text"><strong><code>new</code> te da el objeto, <code>this</code> te deja llenarlo.</strong>
-            El reflector apunta al objeto recién creado por <code>new</code>:</p>
+            La llamada llega al objeto recién creado por <code>new</code>: contesta la instancia nueva.</p>
           <div class="spotlight" aria-hidden="true">
             <div class="spotlight__beam"></div>
-            <div class="spotlight__owner">ana · nueva instancia de Persona</div>
+            <div class="spotlight__owner">contesta: ana · nueva instancia de Persona</div>
           </div>
         </div>
       </div>
