@@ -47,8 +47,23 @@ test.describe('Carga de página', () => {
       html.indexOf('</main>')
     );
 
-    // 3. Verificar el favicon
-    const favicon = page.locator('link[rel="icon"]');
-    await expect(favicon).toHaveAttribute('href', '/favicon.svg');
+    // 3. Verificar el favicon (set completo en /favicon/)
+    const icons = page.locator('link[rel="icon"]');
+    await expect(icons).toHaveCount(2);
+    await expect(icons.first()).toHaveAttribute(
+      'href',
+      '/favicon/favicon-96x96.png'
+    );
+    await expect(icons.nth(1)).toHaveAttribute('href', '/favicon/favicon.svg');
+    await expect(
+      page.locator('link[rel="shortcut icon"]')
+    ).toHaveAttribute('href', '/favicon/favicon.ico');
+    await expect(
+      page.locator('link[rel="apple-touch-icon"]')
+    ).toHaveAttribute('href', '/favicon/apple-touch-icon.png');
+    await expect(page.locator('link[rel="manifest"]')).toHaveAttribute(
+      'href',
+      '/favicon/site.webmanifest'
+    );
   });
 });

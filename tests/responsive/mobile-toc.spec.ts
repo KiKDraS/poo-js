@@ -26,7 +26,13 @@ test.describe('Responsive (viewport 375px)', () => {
       'position',
       'sticky'
     );
-    await expect(page.locator('.brand__tag')).toHaveCSS('display', 'none');
+    // Marca: logo visible, contenido dentro de la altura del header (4rem)
+    const logo = page.locator('.brand__logo');
+    await expect(logo).toBeVisible();
+    const logoBox = await logo.boundingBox();
+    const headerBox = await page.locator('header.site-header').boundingBox();
+    expect(logoBox!.height).toBeCloseTo(32, 0); // 2rem
+    expect(logoBox!.height).toBeLessThanOrEqual(headerBox!.height);
 
     // 2. Comprobar .toc__list
     const list = page.locator('.toc__list');
