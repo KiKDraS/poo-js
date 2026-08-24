@@ -27,7 +27,7 @@ Leer la lección completa y ejecutar los demos interactivos (call-stack stepper 
 | **Layout Approach** | Single long-form lesson. TOC sticky con progreso (desktop). Bloques "código + explicación" en 2 columnas |
 | **Background Treatment** | Textura de papel (grain CSS sutil). Secciones alternan con patrón de cuadrícula (graph paper) |
 | **Motion Choreography** | Reveal escalonado en load + scroll reveal por sección. Frames del stack animan pop-in/pop-out. Calmado, sin gimmicks |
-| **Differentiator** | **Call-stack stepper interactivo** (botón Run: los contextos se apilan/desapilan en vivo) + **metáfora del spotlight** para `this` (haz visual muestra quién es `this` en cada ejemplo) |
+| **Differentiator** | **Call-stack stepper interactivo** (botón Run: los contextos se apilan/desapilan en vivo) + **metáfora de la llamada telefónica** para `this` (quien contesta la llamada; haz visual muestra quién contesta en cada ejemplo) |
 
 ---
 
@@ -48,7 +48,7 @@ Fill into `src/styles/boilerplate/variables.css`.
 | `--color-primary` | `#1E3A5F` | `#5B8DD9` | Brand dominant |
 | `--color-primary-hover` | `#17304F` | `#74A1E3` | Brand hover |
 | `--color-primary-active` | `#12263E` | `#4A78C0` | Brand active |
-| `--color-accent` | `#C75B12` | `#E08A3C` | Highlights, arrows, spotlight |
+| `--color-accent` | `#C75B12` | `#E08A3C` | Highlights, arrows, "quién contesta" |
 | `--color-accent-hover` | `#A94A0E` | `#E9A05C` | Accent hover |
 | `--color-border` | `#DCD3C0` | `#2A3345` | Subtle borders |
 | `--color-border-strong` | `#C4B99F` | `#3A4566` | Emphasized borders |
@@ -133,7 +133,7 @@ Sections in order, single page `index.html` (`lang="es"`):
 
 1. **Hero** — premise + TOC anchors
 2. **Contexto de Ejecución** — definición, call stack (diagrama CSS + stepper interactivo), fases creation/execution, hoisting
-3. **`this` y las 4 reglas** — definición + spotlight, reglas: default, implícita, explícita (`call`/`apply`/`bind`), `new`; prioridad `new` > explícita > implícita > default
+3. **`this` y las 4 reglas** — definición + **metáfora de la llamada telefónica** (`this` = quien contesta): reglas: default (llamada suelta → contesta la centralita global; estricto: nadie), implícita (`ana.saludar()` → contesta `ana`), explícita (`call`/`apply`/`bind` → contesta el objeto que pasas), `new` (línea nueva → contesta la instancia); prioridad `new` > explícita > implícita > default. Haz visual conservado (renombrado "contesta: X")
 4. **Modo estricto vs normal** — `"use strict"`, side-by-side mismo código ambos modos, por qué strict protege
 5. **Puente a la POO** — constructor functions pre-ES6, `prototype`, `this` = instancia, patrón `new` + `this`
 6. **Resumen (cheat sheet)** — 4 reglas + strict + errores comunes (`setTimeout`, extraer métodos); cierre: "siguiente paso: clases ES6"
