@@ -1,0 +1,119 @@
+/* ============================================================
+   components/code-block.css — Bloques de código y salidas
+   ============================================================ */
+
+.code-block {
+  position: relative;
+  margin: 0;
+  padding: var(--space-5);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-body-sm);
+  line-height: var(--line-height-base);
+  color: var(--syntax-plain);
+  tab-size: 2;
+
+  }
+
+/* Selectores top-level: lightningcss downlevel rompe &--x */
+.code-block--mini {
+  padding: var(--space-4);
+}
+
+.code-block--flat {
+  box-shadow: none;
+  background: var(--color-bg-alt);
+}
+
+.code-block__label {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.code-block__badge {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-caption);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-accent-strong);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  transition: color var(--duration-base) var(--ease-standard);
+}
+
+/* Tokenización manual de sintaxis (paleta DESIGN.md §2.1) */
+.tok-kw {
+  color: var(--syntax-keyword);
+}
+
+.tok-str {
+  color: var(--syntax-string);
+}
+
+.tok-fn {
+  color: var(--syntax-function);
+}
+
+.tok-cmt {
+  color: var(--syntax-comment);
+  font-style: italic;
+}
+
+.tok-num {
+  color: var(--syntax-number);
+}
+
+.tok-prop {
+  color: var(--syntax-property);
+}
+
+/* Línea activa (stepper del stack) */
+.code-line {
+  display: block;
+  border-radius: 4px;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+
+  &.is-active {
+    background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    box-shadow: inset 3px 0 0 var(--color-accent);
+  }
+}
+
+/* Salida estilo consola */
+.console {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-body-sm);
+
+  .console__label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-caption);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .console__line::before {
+    content: "› ";
+    color: var(--color-accent-strong);
+  }
+}
