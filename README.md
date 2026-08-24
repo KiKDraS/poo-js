@@ -26,9 +26,6 @@ y pedagógica.
 
 [Ver la lección en GitHub Pages](https://kikdras.github.io/poo-js/)
 
-> Pendiente: el deploy automatizado a GitHub Pages se añade en una tarea
-> separada.
-
 ---
 
 ## Qué enseña
