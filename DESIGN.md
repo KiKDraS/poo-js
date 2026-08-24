@@ -136,7 +136,8 @@ Sections in order, single page `index.html` (`lang="es"`):
 3. **`this` y las 4 reglas** — definición + **metáfora de la llamada telefónica** (`this` = quien contesta): reglas: default (llamada suelta → contesta la centralita global; estricto: nadie), implícita (`ana.saludar()` → contesta `ana`), explícita (`call`/`apply`/`bind` → contesta el objeto que pasas), `new` (línea nueva → contesta la instancia); prioridad `new` > explícita > implícita > default. Haz visual conservado (renombrado "contesta: X")
 4. **Modo estricto vs normal** — `"use strict"`, side-by-side mismo código ambos modos, por qué strict protege
 5. **Puente a la POO** — constructor functions pre-ES6, `prototype`, `this` = instancia, patrón `new` + `this`
-6. **Resumen (cheat sheet)** — 4 reglas + strict + errores comunes (`setTimeout`, extraer métodos); cierre: "siguiente paso: clases ES6"
+6. **Clases ES6 y la POO moderna** — payoff del pre-ES6. Ejemplo completo reproducible: `class`/`constructor` (ES2015), campos públicos (ES2022), `#privados` (ES2022), método privado `#` (ES2022), `get` (ES5, en clase ES2015), `static` (ES2015), `extends`/`super` (ES2015), override; comentarios de versión en el código (`// class — ES2015 (ES6)`, `// #campo — ES2022`); tabla timeline feature→versión→año (`.sheet`); callout puente: clases = azúcar sobre `new`/`prototype`/`this` + spotlight "contesta: instancia"; enseñanza: `#` = privacidad real, `ana.#secreto` → `SyntaxError` en parse
+7. **Resumen (cheat sheet)** — 4 reglas + strict + errores comunes (`setTimeout`, extraer métodos); cierre: "siguiente paso: TypeScript"
 
 Code comments: Spanish. Interactive: stack stepper + strict toggle (2 únicos).
 
