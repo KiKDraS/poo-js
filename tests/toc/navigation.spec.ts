@@ -4,7 +4,7 @@ import { watchPageErrors } from '../support';
 // spec: specs/test-plan.md
 // seed: tests/seed.spec.ts
 
-const LINKS = ['#contexto', '#this', '#estricto', '#poo', '#clases', '#resumen'];
+const LINKS = ['#contexto', '#estricto', '#this', '#poo', '#clases', '#resumen'];
 
 test.describe('TOC sticky y scrollspy', () => {
   let checkErrors: () => void;

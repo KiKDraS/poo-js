@@ -33,8 +33,8 @@ test.describe('Clases ES6 (#clases)', () => {
     const h2s = heads.filter((h) => h.level === 2).map((h) => h.id);
     expect(h2s).toEqual([
       'contexto-title',
-      'this-title',
       'estricto-title',
+      'this-title',
       'poo-title',
       'clases-title',
       'resumen-title',

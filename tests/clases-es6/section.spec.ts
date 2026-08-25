@@ -31,8 +31,8 @@ test.describe('Clases ES6 (#clases)', () => {
     expect(ids).toEqual([
       'inicio',
       'contexto',
-      'this',
       'estricto',
+      'this',
       'poo',
       'clases',
       'resumen',

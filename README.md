@@ -31,9 +31,9 @@ y pedagógica.
 ## Qué enseña
 
 - **Contexto de Ejecución** — call stack, fases de creación/ejecución, hoisting
+- **Modo estricto vs. modo normal** — comparación lado a lado del mismo código
 - **`this` y sus 4 reglas** — con la metáfora de la llamada telefónica
   (`this` = quien contesta): default, implícita, explícita y `new`
-- **Modo estricto vs. modo normal** — comparación lado a lado del mismo código
 - **Puente a la POO** — constructor functions, `prototype`, patrón `new` + `this`
 
 Cada bloque de código es reproducible: definiciones, llamadas y salida
