@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test';
 // NO depende del baseURL de playwright.config.ts.
 //
 // ponytail: el build de Vite empaqueta CSS/JS en dist/assets/*.hash.* — los
-// caminos dev (/poo-js/src/styles/main.css, /poo-js/src/js/main.js) no existen
+// caminos dev (/poo-js/src/styles/main.css, /poo-js/src/main.js) no existen
 // en dist/. Se asertan los artefactos reales del build con regex de sufijo.
 
 const PREVIEW = 'http://localhost:4173';

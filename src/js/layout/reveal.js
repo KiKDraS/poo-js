@@ -2,28 +2,34 @@
 // Reveal por scroll: IntersectionObserver añade .is-visible a [data-reveal].
 // Si no hay soporte, muestra todo directamente (sin contenido oculto).
 
-export function init(config = {}) {
-  const targets = Array.from(document.querySelectorAll("[data-reveal]"));
-  if (!targets.length) return () => {};
+const revealOnIntersect = (entries, revealObserver) => {
+  for (const entry of entries) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("is-visible");
+      revealObserver.unobserve(entry.target);
+    }
+  }
+};
 
-  if (!("IntersectionObserver" in window)) {
-    targets.forEach((el) => el.classList.add("is-visible"));
+export function init() {
+  const revealTargets = Array.from(document.querySelectorAll("[data-reveal]"));
+  if (!revealTargets.length) return () => {};
+
+  const supportsIntersectionObserver = "IntersectionObserver" in window;
+  if (!supportsIntersectionObserver) {
+    revealTargets.forEach((element) => element.classList.add("is-visible"));
     return () => {};
   }
 
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          io.unobserve(entry.target);
-        }
-      }
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+  const revealObserver = new IntersectionObserver(
+    (entries) => revealOnIntersect(entries, revealObserver),
+    {
+      threshold: 0.12,
+      rootMargin: "0px 0px -8% 0px",
+    }
   );
 
-  targets.forEach((el) => io.observe(el));
+  revealTargets.forEach((element) => revealObserver.observe(element));
 
-  return () => io.disconnect();
+  return () => revealObserver.disconnect();
 }

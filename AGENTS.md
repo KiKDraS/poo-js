@@ -11,10 +11,11 @@ Bund: Vite | Struct: HTML5 | Style: Native CSS (lightningcss) | Logic: JS (ES6+)
 Strict. No files outside schema.
 
 ```
-src/
-├── assets/{images, icons, fonts}
-├── styles/{layout,components,boilerplate,main.css}
-├── js/{layout,components,utils,main.js}
+├── src/
+|   ├── assets/{images, icons, fonts}
+|   ├── styles/{layout,components,boilerplate,main.css}
+|   ├── js/{layout,components,utils}
+|   ├── main.js
 ├── tests/{e2e,components}
 ├── public/{favicon,robots.txt}
 ├── DESIGN.md DESIGN.md.template   # DO NOT EDIT
@@ -30,15 +31,17 @@ src/
 | Pipeline+QA+release | `@orchestrator`    | `.opencode/agents/orchestrator.md`    |
 | PR+merge+tag        | `@release-manager` | `.opencode/agents/release-manager.md` |
 
-**All agents respect:**
+**Shared directives:**
 
-- CSS: `src/styles/main.css` only import. NOT from `src/main.js`.
-- JS: `src/main.js`=init only. No DOM manipulate, no `DOMContentLoaded`.
-- HTML: `<link rel="stylesheet" href="/src/styles/main.css">` head.
-  `<script type="module" src="/src/main.js">` before `</body>`.
-- Fonts: local `src/assets/fonts/`. No Google Fonts CDN. Relative CSS paths.
-- Assets: `src/assets/` (Vite-processed). `public/` (as-is: favicon,
-  robots.txt).
+| Scope                             | Location                                    |
+| --------------------------------- | ------------------------------------------- |
+| All agents                        | this AGENTS.md                              |
+| `frontend-dev`+`code-review` arch | `.opencode/docs/trinity-architecture.md`    |
+| `frontend-dev`+`code-review` perf | `.opencode/docs/performance-reliability.md` |
+| Single agent                      | its agent file                              |
+
+Convention: directive for all agents → AGENTS.md. ≥2 agents → doc in
+`.opencode/docs/` + binding line in each agent file. 1 agent → agent file.
 
 ## Git Flow
 

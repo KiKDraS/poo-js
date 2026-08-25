@@ -67,8 +67,8 @@ test.describe('Carga de página', () => {
     await expect(tocLinks).toHaveCount(6);
     const toc = [
       ['Contexto', '#contexto'],
-      ['this', '#this'],
       ['Estricto', '#estricto'],
+      ['this', '#this'],
       ['POO', '#poo'],
       ['Clases', '#clases'],
       ['Resumen', '#resumen'],
