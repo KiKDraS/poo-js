@@ -1,17 +1,23 @@
-# Test Plan — Landing "Contexto de Ejecución y this"
+# Test Plan — Landing «Contexto de Ejecución y this» (con sección Clases ES6)
 
 ## Application Overview
 
-Landing page de una lección interactiva en español (JS para principiantes): Contexto de Ejecución + reglas de this (pre-ES6). Vanilla HTML/CSS/JS + Vite, servida en http://localhost:5173 (baseURL en playwright.config.ts, proyecto chromium, viewport por defecto 1280x720, testDir ./tests).
+Landing page de una lección interactiva en español (JS para principiantes): Contexto de Ejecución + reglas de this (pre-ES6) + nueva sección 05 · Clases ES6 (#clases, rama feature/clases-es6). Vanilla HTML/CSS/JS + Vite, servida en http://localhost:5173 (baseURL en playwright.config.ts, proyecto chromium, viewport por defecto 1280x720, testDir ./tests). Ejecución: arrancar dev server (npm run dev) y npx playwright test.
 
-Componentes interactivos (verificados contra la página real):
+Estructura verificada contra la página real (7 secciones en main): #inicio (hero), #contexto, #this, #estricto, #poo, #clases (NUEVA), #resumen (renumerada 06). TOC sticky con 6 enlaces .toc__link: Contexto/this/Estricto/POO/Clases/Resumen. Cada sección con aria-labelledby (hero-title, contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title).
+
+Componentes interactivos:
 1. Stepper del call stack (#stack-demo): botón [data-next] avanza 6 pasos; frames div.frame[data-name] entran/salen de [data-stack] (animación ~450ms FRAME_MS); contador [data-depth]; línea activa .code-line.is-active en [data-code]; estado en vivo [data-status] con aria-live="polite"; botón [data-reset] "Reiniciar".
 2. Toggle modo normal/estricto (#strict-demo): button.switch[data-strict-switch] role="switch"; badge [data-strict-badge]; salidas [data-output-normal]/[data-output-strict] (.console__line); clase #strict-demo.is-strict.
-3. TOC sticky + scrollspy ([data-toc], 5 enlaces .toc__link a #contexto/#this/#estricto/#poo/#resumen): IntersectionObserver con rootMargin "-45% 0px -50% 0px" añade .is-active + aria-current="true" al enlace de la sección en la banda central; barra de progreso [data-progress] con transform: scaleX. Nota: scroll-behavior: smooth + scroll-padding-top: 80px — tras un clic de ancla hay que esperar a que el scroll se estabilice antes de afirmar scrollspy/hash.
+3. TOC sticky + scrollspy ([data-toc], 6 enlaces): IntersectionObserver con rootMargin "-45% 0px -50% 0px" añade .is-active + aria-current="true" al enlace de la sección en la banda central; barra de progreso [data-progress] con transform: scaleX. Nota: scroll-behavior: smooth + scroll-padding-top: 80px — tras un clic de ancla hay que esperar a que el scroll se estabilice antes de afirmar scrollspy/hash.
 
-PROBLEMA CONOCIDO (documentado en el test responsive): en viewport 375px existe overflow horizontal real — documentElement.scrollWidth = 454px > clientWidth = 375px. Causa: figure.stack-diagram de #contexto (.frame con white-space: nowrap, contenedor sin recorte). El resto de candidatos (.toc__list, .table-wrap, .hero-visual) sí están recortados.
+Sección nueva #clases (05 · Clases ES6: la POO moderna): bloque de código con clase Persona/Estudiante (class, constructor, #campo privado, #método privado, get, static, extends, super, override) y comentarios de versión ("ES2015 (ES6)", "ES2022", "SyntaxError — # es privado de verdad (ES2022)"); tabla timeline .sheet (Característica/Versión/Año, 4 filas, contiene "ES6 · ES2015" y "ES2022 (ES13)"); callout .callout--pattern con spotlight aria-hidden "contesta: ana · instancia de Estudiante"; 6 elementos [data-reveal] en la sección.
 
-Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg #10151f (body rgb(16,21,31)); claro #f7f2e9 (rgb(247,242,233)). Sin Google Fonts CDN (0 referencias). Ejecución: arrancar dev server (npm run dev) y npx playwright test.
+NOTA RESPONSIVE (actualizada): el problema conocido de overflow horizontal en 375px (figure.stack-diagram, scrollWidth 454px > 375px) está CORREGIDO en esta rama — verificado en vivo: documentElement.scrollWidth == clientWidth == 375. tests/responsive/no-horizontal-overflow.spec.ts pasa (guarda de regresión). El texto viejo del plan que lo describía como fallando está desactualizado.
+
+Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg #10151f (body rgb(16,21,31)); claro #f7f2e9 (rgb(247,242,233)). Sin Google Fonts CDN (0 referencias). JSON-LD: @type LearningResource, inLanguage es, teaches con 6 temas (sin entrada de clases — sin cambios en el test).
+
+REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN tests/page-load/page-structure.spec.ts, tests/page-load/var-not-const.spec.ts y tests/responsive/mobile-toc.spec.ts (asserts de conteo 6→7 secciones, 5→6 enlaces TOC, const 5→6 tokens, h2 5→6). NO fallan (pasan tal cual) tests/toc/navigation.spec.ts y tests/toc/scrollspy.spec.ts (iteran su propia lista fija); se recomienda extenderlos con #clases para cobertura. tests/responsive/no-horizontal-overflow.spec.ts ahora PASA. Sin cambios necesarios: hero, no-external-fonts, aria-live (único [aria-live] se mantiene), skip-link, stack-demo, strict-toggle, dark-mode, progress-bar, seed.
 
 ## Test Scenarios
 
@@ -19,7 +25,7 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
 
 **Seed:** `tests/seed.spec.ts`
 
-#### 1.1. La página carga con idioma español, título y estructura completa
+#### 1.1. La página carga con idioma español, título y estructura completa (7 secciones)
 
 **File:** `tests/page-load/page-structure.spec.ts`
 
@@ -28,16 +34,17 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
     - expect: Respuesta HTTP 200 y title del documento: "Contexto de Ejecución y this — JavaScript para principiantes"
   2. Comprobar el atributo lang del elemento html
     - expect: document.documentElement.lang === "es"
-  3. Contar las secciones dentro de main
-    - expect: 6 secciones: #inicio (hero), #contexto, #this, #estricto, #poo, #resumen, cada una con aria-labelledby (hero-title, contexto-title, this-title, estricto-title, poo-title, resumen-title)
+  3. Contar las secciones dentro de main y verificar aria-labelledby de cada una
+    - expect: 7 secciones: #inicio (hero), #contexto, #this, #estricto, #poo, #clases, #resumen
+    - expect: Cada sección con aria-labelledby: hero-title, contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title
   4. Comprobar main#contenido, header.site-header, footer.site-footer y nav.toc[data-toc] aria-label="Índice de la lección"
     - expect: main id="contenido"
     - expect: header.site-header visible (position: sticky)
     - expect: footer.site-footer visible: .footer__love "Hecho con ♥ para estudiantes de JavaScript", .footer__back "Volver arriba ↑" href="#inicio"
-  5. Verificar los 5 enlaces .toc__link del TOC
-    - expect: Enlaces exactos: "Contexto"→#contexto, "this"→#this, "Estricto"→#estricto, "POO"→#poo, "Resumen"→#resumen
+  5. Verificar los 6 enlaces .toc__link del TOC (ACTUALIZADO: antes 5)
+    - expect: Enlaces exactos: "Contexto"→#contexto, "this"→#this, "Estricto"→#estricto, "POO"→#poo, "Clases"→#clases, "Resumen"→#resumen
   6. Verificar el script type="application/ld+json"
-    - expect: @type LearningResource, inLanguage "es", teaches con 6 temas
+    - expect: @type LearningResource, inLanguage "es", teaches con 6 temas (sin cambios — el JSON-LD no incluye la sección Clases)
 
 #### 1.2. Hero: título, premisa, badge y CTA
 
@@ -46,15 +53,13 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
 **Steps:**
   1. Leer el h1#hero-title
     - expect: Texto normalizado: "El Contexto de Ejecución y el misterio de this"
-  2. Leer p.hero__kicker
-    - expect: "JavaScript para principiantes"
-  3. Leer p.hero__premise
-    - expect: Empieza "Antes de las clases, antes de los frameworks:" y menciona "quién es realmente this"
-  4. Leer p.hero__badge
-    - expect: "Enfoque pre-ES6 · Base para entender POO"
-  5. Comprobar a.hero__cta
-    - expect: Texto "Empezar la lección", href="#contexto", clases btn btn--primary
-  6. Verificar .hero-visual (aria-hidden=true)
+  2. Leer p.hero__kicker y p.hero__premise
+    - expect: hero__kicker: "JavaScript para principiantes"
+    - expect: Premise empieza "Antes de las clases, antes de los frameworks:" y contiene "quién es realmente this" (verificado: sigue pasando)
+  3. Leer p.hero__badge y comprobar a.hero__cta
+    - expect: Badge: "Enfoque pre-ES6 · Base para entender POO"
+    - expect: CTA: texto "Empezar la lección", href="#contexto", clases btn btn--primary
+  4. Verificar .hero-visual (aria-hidden=true)
     - expect: 3 div.frame--hero: saludar("Ana"), main(), global (frame--lit); caption "LIFO · el último en entrar, primero en salir"
 
 #### 1.3. No hay Google Fonts CDN en el HTML
@@ -65,29 +70,26 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
   1. Obtener el HTML completo (page.content())
     - expect: NO contiene "fonts.googleapis.com" ni "fonts.gstatic.com"
     - expect: Único stylesheet: /src/styles/main.css
-  2. Comprobar el script del módulo
+  2. Comprobar el script del módulo y el favicon
     - expect: Único script type="module" → /src/js/main.js antes de </body>
-  3. Verificar el favicon
     - expect: link rel="icon" → /favicon.svg (ruta local)
 
-#### 1.4. Contenido de enseñanza y ejemplos pre-ES6 (var, no const)
+#### 1.4. Contenido de enseñanza y ejemplos modernos (let/const, var solo en hoisting)
 
 **File:** `tests/page-load/var-not-const.spec.ts`
 
 **Steps:**
   1. Contar <span class="tok-kw">var</span> en el HTML renderizado
-    - expect: ≥7 ocurrencias de var (ej. Regla 2: var ana = { nombre: "Ana" }; Regla 3: var fija = foo.bind(objeto); Regla 4 y #poo: var ana = new Persona("Ana"))
-  2. Buscar el token const en bloques de código
-    - expect: Ninguna aparición de <span class="tok-kw">const</span>
-  3. Verificar strings clave en el texto visible
-    - expect: "Contexto de Ejecución" (h2 #contexto-title; section__num "01 · Contexto de Ejecución")
-    - expect: "this y las 4 reglas" (h2 #this-title)
-    - expect: "Por defecto" (rule-card__title Regla 1)
-    - expect: "modo estricto" (p.ej. section__num "03 · Modo estricto vs normal")
-    - expect: "Persona" (constructora en #poo y Regla 4)
-    - expect: "Hola, soy Ana" (comentario del bloque #poo)
-  4. Verificar los 5 h2 y referencias MDN
-    - expect: h2s: "Contexto de Ejecución", "this y las 4 reglas", "Modo estricto vs normal", "Puente a la POO", "Resumen (cheat sheet)"
+    - expect: 2 ocurrencias (hoisting de var + contraste TDZ) — sin cambios, #clases no añade var
+  2. Contar el token const en bloques de código (ACTUALIZADO: antes 5)
+    - expect: 6 ocurrencias de <span class="tok-kw">const</span> (5 previos + `const ana = new Estudiante(...)` en #clases)
+  3. Verificar strings clave en el texto visible y en los bloques de código
+    - expect: h2#contexto-title "Contexto de Ejecución"; section__num "01 · Contexto de Ejecución"
+    - expect: h2#this-title "this y las 4 reglas"; Regla 1 "Por defecto"; "03 · Modo estricto vs normal"
+    - expect: Código contiene: 'const ana = new Persona("Ana");', 'const fija = foo.bind(objeto);', 'let apodo = "Anita";', 'var despedida = "Chau";', 'Hola, soy Ana'
+    - expect: ≥2 menciones de Persona en código
+  4. Verificar los 6 h2 y referencias MDN (ACTUALIZADO: antes 5)
+    - expect: h2s exactos: "Contexto de Ejecución", "this y las 4 reglas", "Modo estricto vs normal", "Puente a la POO", "Clases ES6: la POO moderna" (NUEVO), "Resumen (cheat sheet)"
     - expect: 4 enlaces MDN en footer (this, call/apply/bind, modo estricto, operador new) target="_blank" rel="noopener"
 
 ### 2. Stepper del call stack (#stack-demo)
@@ -101,19 +103,14 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
 **Steps:**
   1. Navegar a la URL base y hacer scroll hasta #stack-demo
     - expect: #stack-demo visible
-  2. Leer el botón [data-next]
-    - expect: Texto: "Ejecutar paso a paso"
-  3. Comprobar [data-reset]
-    - expect: Texto "Reiniciar" y disabled=true
-  4. Leer [data-depth]
-    - expect: Texto "1"
-  5. Leer los frames de [data-stack]
-    - expect: 1 frame: div.frame[data-name="global"] texto "global" (clase frame--enter)
-    - expect: [data-stack] aria-hidden="true"
-  6. Leer [data-status]
-    - expect: Texto exacto: "Paso 1 de 6 · profundidad 1: Se crea el contexto global. El programa aún no ha llamado a nada."
-    - expect: aria-live="polite"
-  7. Comprobar la línea activa en [data-code]
+  2. Leer el botón [data-next] y [data-reset]
+    - expect: [data-next]: "Ejecutar paso a paso"
+    - expect: [data-reset]: "Reiniciar" y disabled=true
+  3. Leer [data-depth] y los frames de [data-stack]
+    - expect: [data-depth] "1"
+    - expect: 1 frame: div.frame[data-name="global"] (clase frame--enter); [data-stack] aria-hidden="true"
+  4. Leer [data-status] y la línea activa en [data-code]
+    - expect: Status exacto: "Paso 1 de 6 · profundidad 1: Se crea el contexto global. El programa aún no ha llamado a nada." con aria-live="polite"
     - expect: Ningún .code-line.is-active (paso 1 sin resaltado)
 
 #### 2.2. Recorrido completo: 6 pasos (frames, profundidad, líneas, status)
@@ -123,25 +120,19 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
 **Steps:**
   1. Clic en [data-next] + espera 500ms (FRAME_MS=450)
     - expect: [data-next] "Siguiente paso"; [data-reset] habilitado; [data-depth] "2"
-    - expect: Frames [data-stack]: global, main
-    - expect: Línea activa: .code-line[data-line="6"].is-active
-    - expect: Status: "Paso 2 de 6 · profundidad 2: Se llama a main(): su contexto entra al stack (push)."
+    - expect: Frames: global, main; línea activa data-line="6"; status "Paso 2 de 6 · profundidad 2: Se llama a main(): su contexto entra al stack (push)."
   2. 2º clic + 500ms
     - expect: [data-depth] "3"; frames: global, main, saludar
-    - expect: Línea activa: data-line="4"
-    - expect: Status: "Paso 3 de 6 · profundidad 3: Dentro de main(), se llama a saludar("Ana"): otro push."
+    - expect: Línea activa data-line="4"; status "Paso 3 de 6 · profundidad 3: Dentro de main(), se llama a saludar("Ana"): otro push."
   3. 3er clic + 500ms
     - expect: [data-depth] sigue "3"; frames sin cambios
-    - expect: Línea activa: data-line="1"
-    - expect: Status: "Paso 4 de 6 · profundidad 3: Se ejecuta console.log("Hola Ana"). El contexto activo es saludar."
+    - expect: Línea activa data-line="1"; status "Paso 4 de 6 · profundidad 3: Se ejecuta console.log("Hola Ana"). El contexto activo es saludar."
   4. 4º clic + 500ms
     - expect: [data-depth] "2"; frames: global, main (saludar recibe frame--leave y se elimina tras 450ms)
-    - expect: Línea activa: data-line="2"
-    - expect: Status: "Paso 5 de 6 · profundidad 2: saludar termina: su contexto sale del stack (pop) y se destruye."
+    - expect: Línea activa data-line="2"; status "Paso 5 de 6 · profundidad 2: saludar termina: su contexto sale del stack (pop) y se destruye."
   5. 5º clic + 500ms
     - expect: [data-depth] "1"; frames: global
-    - expect: Línea activa: data-line="5"
-    - expect: Status: "Paso 6 de 6 · profundidad 1: main termina: pop. Solo queda el contexto global. Fin del programa."
+    - expect: Línea activa data-line="5"; status "Paso 6 de 6 · profundidad 1: main termina: pop. Solo queda el contexto global. Fin del programa."
     - expect: [data-next] cambia a "Reiniciar" (último paso)
 
 #### 2.3. Reinicio: por label Reiniciar y por botón [data-reset]
@@ -184,13 +175,11 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
   1. Navegar y hacer scroll hasta #strict-demo
     - expect: #strict-demo visible y SIN clase .is-strict
   2. Comprobar button.switch[data-strict-switch]
-    - expect: role="switch", aria-checked="false", aria-label="Cambiar a modo estricto"
-    - expect: Contiene span.switch__thumb
-  3. Leer las etiquetas .strict-demo__label
+    - expect: role="switch", aria-checked="false", aria-label="Cambiar a modo estricto", contiene span.switch__thumb
+  3. Leer las etiquetas .strict-demo__label y la insignia [data-strict-badge]
     - expect: "modo normal" (--normal) y "modo estricto" (--strict) visibles
-  4. Leer la insignia [data-strict-badge]
-    - expect: Texto: "modo normal"
-  5. Comprobar las salidas .console--output
+    - expect: Badge: "modo normal"
+  4. Comprobar las salidas .console--output
     - expect: [data-output-normal] visible: .console__line "window (el objeto global)"
     - expect: [data-output-strict] oculto (hidden) con .console__line "undefined"
 
@@ -200,12 +189,10 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
 
 **Steps:**
   1. Clic en [data-strict-switch]
-    - expect: aria-checked="true"; aria-label="Cambiar a modo normal"
-    - expect: Badge: "modo estricto"; #strict-demo gana .is-strict
+    - expect: aria-checked="true"; aria-label="Cambiar a modo normal"; badge "modo estricto"; #strict-demo gana .is-strict
     - expect: [data-output-normal] hidden=true; [data-output-strict] visible mostrando "undefined"
   2. Clic de nuevo en [data-strict-switch]
-    - expect: aria-checked="false"; aria-label="Cambiar a modo estricto"
-    - expect: Badge: "modo normal"; .is-strict eliminada
+    - expect: aria-checked="false"; aria-label="Cambiar a modo estricto"; badge "modo normal"; .is-strict eliminada
     - expect: [data-output-normal] visible "window (el objeto global)"; [data-output-strict] oculto
 
 #### 3.3. Accesibilidad por teclado del switch
@@ -223,12 +210,12 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
 
 **Seed:** `tests/seed.spec.ts`
 
-#### 4.1. Los 5 enlaces del TOC navegan a sus secciones
+#### 4.1. Los 6 enlaces del TOC navegan a sus secciones (ACTUALIZADO: antes 5)
 
 **File:** `tests/toc/navigation.spec.ts`
 
 **Steps:**
-  1. Para cada .toc__link (href #contexto, #this, #estricto, #poo, #resumen): clic y esperar a que window.scrollY se estabilice (scroll-behavior: smooth; máx ~2s)
+  1. Para cada .toc__link (href #contexto, #this, #estricto, #poo, #clases, #resumen): clic y esperar a que window.scrollY se estabilice (scroll-behavior: smooth; máx ~2s). ACTUALIZACIÓN MÍNIMA: añadir '#clases' a la lista LINKS y renombrar el test a "Los 6 enlaces…". El test actual NO falla (itera su propia lista), solo le falta cobertura de #clases.
     - expect: location.hash coincide con el href pulsado
     - expect: La sección destino visible: getBoundingClientRect().top ≈ 80px (scroll-padding-top: calc(4rem + space-4) sobre header sticky), bottom > 0
   2. Verificar el header fijo tras scroll profundo
@@ -236,14 +223,14 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
   3. Pulsar .footer__back "Volver arriba ↑"
     - expect: location.hash "#inicio" y el hero vuelve al viewport
 
-#### 4.2. Scrollspy: la sección en la banda central activa su enlace
+#### 4.2. Scrollspy: la sección en la banda central activa su enlace (ACTUALIZADO: +clases)
 
 **File:** `tests/toc/scrollspy.spec.ts`
 
 **Steps:**
   1. Navegar a la URL base (scrollY=0)
-    - expect: El enlace "Contexto" mantiene .is-active y aria-current="true" (comportamiento observado: la banda 45-50% cae en el hero, no observado; el último activo persiste)
-  2. Para cada objetivo (#contexto, #this, #estricto, #poo, #resumen): window.scrollTo(0, seccion.offsetTop - 1) y esperar .is-active en su enlace (waitForFunction, timeout 3s)
+    - expect: Ningún .toc__link.is-active al inicio (la banda 45-50% cae en el hero)
+  2. Para cada objetivo (#contexto, #this, #estricto, #poo, #clases, #resumen): window.scrollTo(0, seccion.offsetTop - 1) y esperar .is-active en su enlace (waitForFunction, timeout 3s). ACTUALIZACIÓN MÍNIMA: añadir 'clases' a la lista SECTIONS entre 'poo' y 'resumen'. El test actual NO falla, solo no cubre #clases.
     - expect: Solo el enlace de la sección en banda tiene .is-active + aria-current="true"
     - expect: El enlace anterior pierde .is-active y aria-current (atributo eliminado)
   3. Scroll hasta el final y comprobar la barra de progreso
@@ -285,7 +272,7 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
 **File:** `tests/a11y/aria-live.spec.ts`
 
 **Steps:**
-  1. Localizar los elementos con aria-live
+  1. Localizar los elementos con aria-live (verificado: #clases no añade ninguno)
     - expect: Único [aria-live] en la página: p.stack-demo__status[data-status] con aria-live="polite"
   2. Clic en [data-next] y comprobar el anuncio
     - expect: [data-status] pasa a "Paso 2 de 6 · profundidad 2: Se llama a main(): su contexto entra al stack (push)."
@@ -293,6 +280,7 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
     - expect: [data-stack] aria-hidden="true"
     - expect: .hero-visual aria-hidden="true"
     - expect: .progress aria-hidden="true"
+    - expect: .spotlight de #poo y #clases aria-hidden="true" (consistente)
 
 ### 6. Modo oscuro (prefers-color-scheme)
 
@@ -324,7 +312,7 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
 
 **Seed:** `tests/seed.spec.ts`
 
-#### 7.1. TOC y header en móvil: chips scrollables, marca colapsada
+#### 7.1. TOC y header en móvil: chips scrollables, marca colapsada (ACTUALIZADO: antes 5 enlaces)
 
 **File:** `tests/responsive/mobile-toc.spec.ts`
 
@@ -335,17 +323,206 @@ Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg
   2. Comprobar .toc__list
     - expect: overflow-x: auto (scroll interno)
     - expect: scrollWidth > clientWidth (verificado: 391px vs 156px)
-  3. Verificar los 5 enlaces .toc__link
-    - expect: Presentes con los mismos hrefs
+  3. Verificar los 6 enlaces .toc__link (ACTUALIZACIÓN MÍNIMA: toHaveCount(5)→(6) y añadir '#clases' a la lista de hrefs)
+    - expect: Presentes con los mismos hrefs: #contexto, #this, #estricto, #poo, #clases, #resumen
   4. Comprobar el layout del stepper en móvil
     - expect: Panel de código y pila apilados verticalmente (media max: 52rem), ambos visibles, sin solapamiento
 
-#### 7.2. Sin overflow horizontal en 375px
+#### 7.2. Sin overflow horizontal en 375px (ACTUALIZADO: ahora PASA)
 
 **File:** `tests/responsive/no-horizontal-overflow.spec.ts`
 
 **Steps:**
   1. Contexto 375x812, medir documentElement.scrollWidth vs clientWidth
-    - expect: PROBLEMA CONOCIDO — actualmente FALLA: scrollWidth 454px > clientWidth 375px. Causa raíz: figure.stack-diagram de #contexto (.frame white-space: nowrap sin recorte; .toc__list, .table-wrap y .hero-visual sí recortan). Criterio de aceptación cuando se arregle: scrollWidth <= clientWidth
-  2. Verificar interacción en 375px a pesar del desbordamiento
+    - expect: scrollWidth <= clientWidth — VERIFICADO en vivo en esta rama: 375 == 375 (el bug conocido figure.stack-diagram 454px está corregido; #clases no reintroduce overflow: .table-wrap y .code-block recortan)
+  2. Verificar interacción en 375px
     - expect: Scroll vertical funcional; #stack-demo y #strict-demo operativos
+
+### 8. Clases ES6 (#clases) — NUEVA SECCIÓN
+
+**Seed:** `tests/seed.spec.ts`
+
+#### 8.1. La sección #clases existe, está entre #poo y #resumen y está bien cableada
+
+**File:** `tests/clases-es6/section.spec.ts`
+
+**Steps:**
+  1. Navegar a la URL base y localizar main section#clases
+    - expect: Existe main section#clases con clase .section
+  2. Verificar la posición en el orden de secciones
+    - expect: Orden de ids en main: inicio, contexto, this, estricto, poo, clases, resumen (clases entre poo y resumen)
+  3. Leer el número de sección y el encabezado
+    - expect: .section__num: "05 · Clases ES6"
+    - expect: h2#clases-title: "Clases ES6: la POO moderna"
+  4. Verificar aria-labelledby y su objetivo
+    - expect: section#clases aria-labelledby="clases-title"
+    - expect: document.getElementById("clases-title") existe (target resuelto)
+  5. Contar elementos [data-reveal] dentro de #clases
+    - expect: 6 elementos [data-reveal] (header, prose, split, callout, h3, table-wrap)
+
+#### 8.2. El enlace del TOC "Clases" está entre POO y Resumen y navega a #clases
+
+**File:** `tests/clases-es6/toc.spec.ts`
+
+**Steps:**
+  1. Localizar los enlaces .toc__link y comprobar el orden
+    - expect: 6 enlaces: Contexto, this, Estricto, POO, Clases, Resumen ("Clases" entre "POO" y "Resumen")
+    - expect: El enlace "Clases" tiene href="#clases"
+  2. Clic en el enlace "Clases" y esperar a que el scroll se estabilice (smooth, ~2s)
+    - expect: location.hash === "#clases"
+    - expect: La sección #clases queda visible: getBoundingClientRect().top ≈ 80px (scroll-padding-top), bottom > 0
+  3. Volver arriba y clicar el enlace "POO" para verificar que ambos lados del TOC siguen operativos
+    - expect: #poo vuelve a quedar en la banda ~80px
+
+#### 8.3. El bloque de código contiene la clase Persona, herencia, campos privados y comentarios de versión
+
+**File:** `tests/clases-es6/code-block.spec.ts`
+
+**Steps:**
+  1. Localizar el .code-block de #clases y leer su texto (textContent del pre)
+    - expect: Contiene "class Persona"
+    - expect: Contiene "extends" (class Estudiante extends Persona)
+    - expect: Contiene "#secreto" (campo privado)
+    - expect: Contiene "super(nombre, edad)"
+    - expect: Contiene el comentario "ES2015 (ES6)" (p.ej. "class — ES2015 (ES6)")
+    - expect: Contiene "ES2022" (campos privados, método privado)
+    - expect: Contiene "SyntaxError — # es privado de verdad (ES2022)"
+  2. Verificar el hint del bloque
+    - expect: p.code-block__hint "Pégalo en la consola de tu navegador o en Node."
+
+#### 8.4. La tabla timeline tiene 4 filas con cabeceras Característica/Versión/Año y las versiones clave
+
+**File:** `tests/clases-es6/timeline-table.spec.ts`
+
+**Steps:**
+  1. Localizar la tabla .sheet de #clases (h3 "Versiones de ECMAScript" precediéndola)
+    - expect: thead con columnheaders: "Característica", "Versión", "Año" (con scope="col")
+    - expect: 4 filas en tbody
+    - expect: caption .visually-hidden: "Versiones de ECMAScript de las características de clase"
+  2. Leer los valores de la columna Versión
+    - expect: Contiene "ES6 · ES2015" (class/constructor/extends/super/static)
+    - expect: Contiene "ES2022 (ES13)" (campos públicos y campos/métodos privados #)
+    - expect: Contiene "ES5 (2009) · en clase: ES6" (get/set)
+  3. Verificar años
+    - expect: Filas con años "2015" y "2022" presentes
+
+#### 8.5. El callout de patrón está presente con su spotlight "contesta: ana · instancia de Estudiante"
+
+**File:** `tests/clases-es6/callout.spec.ts`
+
+**Steps:**
+  1. Localizar el .callout--pattern dentro de #clases
+    - expect: callout__label: "Patrón"
+    - expect: callout__text contiene "Clases = azúcar, debajo sigue el motor."
+  2. Verificar el spotlight
+    - expect: .spotlight__owner: "contesta: ana · instancia de Estudiante"
+    - expect: .spotlight aria-hidden="true" (decorativo)
+
+#### 8.6. Resumen renumerado a 06 con el siguiente paso TypeScript
+
+**File:** `tests/clases-es6/resumen.spec.ts`
+
+**Steps:**
+  1. Localizar main section#resumen
+    - expect: .section__num: "06 · Resumen" (renumerado tras insertar #clases)
+    - expect: h2#resumen-title: "Resumen (cheat sheet)"
+  2. Verificar el bloque next-step
+    - expect: h3 del .next-step: "Siguiente paso: TypeScript"
+    - expect: El párrafo menciona implements, abstract y public/private/protected
+
+#### 8.7. A11y: orden de encabezados intacto y todos los aria-labelledby resueltos
+
+**File:** `tests/clases-es6/headings.spec.ts`
+
+**Steps:**
+  1. Recorrer los encabezados de main (h1, h2, h3) en orden de documento
+    - expect: Exactamente 1 h1 (hero-title)
+    - expect: 6 h2 (contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title)
+    - expect: Todos los h3 cuelgan de un h2 inmediatamente anterior: ningún nivel saltado (no hay h3 antes del primer h2 ni h2→h4)
+    - expect: Orden intacto: h1 → h2s → h3s, sin niveles que se salten
+  2. Para cada section de main, resolver su aria-labelledby
+    - expect: Los 7 aria-labelledby (hero-title, contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title) resuelven a un elemento existente
+    - expect: El elemento referenciado es el encabezado de la sección
+
+### 9. Regresión — ajustes mínimos a tests existentes (rama feature/clases-es6)
+
+**Seed:** `tests/seed.spec.ts`
+
+#### 9.1. page-structure.spec.ts: FALLA — actualizar conteos 6→7 y 5→6
+
+**File:** `tests/page-load/page-structure.spec.ts`
+
+**Steps:**
+  1. Cambiar el assert de secciones
+    - expect: toHaveCount(6) → toHaveCount(7) en main section
+    - expect: Añadir ['#clases', 'clases-title'] al array expected de aria-labelledby (entre poo y resumen)
+  2. Cambiar el assert del TOC
+    - expect: toHaveCount(5) → toHaveCount(6) en .toc__link
+    - expect: Añadir ['Clases', '#clases'] al array toc (entre POO y Resumen)
+  3. JSON-LD: sin cambios
+    - expect: teaches sigue teniendo 6 temas (el JSON-LD no se tocó en la rama) — no tocar este assert
+
+#### 9.2. var-not-const.spec.ts: FALLA — const 5→6 y h2 5→6
+
+**File:** `tests/page-load/var-not-const.spec.ts`
+
+**Steps:**
+  1. Cambiar el conteo de const
+    - expect: expect(constCount).toBe(5) → toBe(6) (el bloque de #clases añade `const ana = new Estudiante(...)`, verificado en vivo)
+  2. Cambiar la lista de h2
+    - expect: Añadir 'Clases ES6: la POO moderna' al array de h2s, entre 'Puente a la POO' y 'Resumen (cheat sheet)'
+  3. Sin cambios en var ni MDN
+    - expect: varCount sigue siendo 2; 4 enlaces MDN intactos
+
+#### 9.3. mobile-toc.spec.ts: FALLA — enlaces 5→6
+
+**File:** `tests/responsive/mobile-toc.spec.ts`
+
+**Steps:**
+  1. Cambiar el conteo de .toc__link
+    - expect: toHaveCount(5) → toHaveCount(6)
+  2. Añadir '#clases' al bucle de hrefs
+    - expect: El bucle verifica también .toc__link[href="#clases"] existe
+
+#### 9.4. navigation.spec.ts: NO falla — extensión recomendada (opcional)
+
+**File:** `tests/toc/navigation.spec.ts`
+
+**Steps:**
+  1. Evaluar el estado actual
+    - expect: PASA tal cual: itera su propia lista LINKS (los 5 viejos siguen existiendo) — no rompe
+  2. Extensión mínima recomendada para cubrir #clases
+    - expect: Añadir '#clases' a LINKS entre '#poo' y '#resumen'
+    - expect: Renombrar el test: "Los 5 enlaces" → "Los 6 enlaces del TOC navegan a sus secciones"
+
+#### 9.5. scrollspy.spec.ts: NO falla — extensión recomendada (opcional)
+
+**File:** `tests/toc/scrollspy.spec.ts`
+
+**Steps:**
+  1. Evaluar el estado actual
+    - expect: PASA tal cual: itera su propia lista SECTIONS (sin #clases) y el assert de 1 solo .is-active se mantiene
+  2. Extensión mínima recomendada
+    - expect: Añadir 'clases' a SECTIONS entre 'poo' y 'resumen' para que la banda central de #clases active su enlace
+
+#### 9.6. no-horizontal-overflow.spec.ts: ahora PASA (nota del plan desactualizada)
+
+**File:** `tests/responsive/no-horizontal-overflow.spec.ts`
+
+**Steps:**
+  1. Evaluar el estado actual en la rama
+    - expect: PASA: scrollWidth 375 <= clientWidth 375 en 375px (bug figure.stack-diagram corregido en desarrollos anteriores; el guard de regresión del test ya era correcto)
+  2. Actualizar solo la documentación del plan
+    - expect: El texto "PROBLEMA CONOCIDO … actualmente FALLA" de la overview/responsive queda obsoleto: sustituirlo por la nota de que pasa y vigila la regresión (ver overview actualizada)
+
+#### 9.7. Sin cambios necesarios (verificado)
+
+**File:** sin cambios — ningún archivo (solo verificación)
+
+**Steps:**
+  1. Verificar que estos tests siguen pasando sin tocar nada
+    - expect: hero.spec.ts: premisa sigue conteniendo 'quién es realmente this' (verificado)
+    - expect: no-external-fonts.spec.ts: sin fuentes externas nuevas
+    - expect: aria-live.spec.ts: sigue habiendo un único [aria-live] (#clases no añade)
+    - expect: skip-link, stack-demo (4), strict-toggle (3), progress-bar, dark-mode (2): sin relación con #clases
+    - expect: seed.spec.ts: título y status 200 intactos

@@ -30,12 +30,6 @@
   display: block;
   height: 2rem;
   width: auto;
-
-  /* ponytail: logo exportado para fondo oscuro (píxeles: 0 dark, todo blanco/crema).
-     Header en claro es crema #f7f2e9 → invertir; en oscuro va tal cual. */
-  @media (prefers-color-scheme: light) {
-    filter: invert(1);
-  }
 }
 
 /* TOC sticky: chips horizontales */
