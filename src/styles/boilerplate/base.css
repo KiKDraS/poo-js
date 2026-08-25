@@ -77,6 +77,58 @@ code {
   color: var(--color-text-inverse);
 }
 
+/* Scrollbar de página: identidad de diseño (Firefox via scrollbar-color) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) var(--color-bg);
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+html::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border: 2px solid var(--color-bg);
+  border-radius: 999px;
+
+  &:hover {
+    background: var(--color-accent-strong);
+  }
+}
+
+/* Scrollbars de ejemplos: identidad de página (thumb = borde fuerte,
+   hover = acento; track transparente). Firefox via scrollbar-color. */
+:where(.code-block, .stack-demo, .stack-diagram, .table-wrap) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+:where(.code-block, .stack-demo, .stack-diagram, .table-wrap)::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+:where(.code-block, .stack-demo, .stack-diagram, .table-wrap)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:where(.code-block, .stack-demo, .stack-diagram, .table-wrap)::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+
+  &:hover {
+    background: var(--color-accent-strong);
+    background-clip: padding-box;
+  }
+}
+
 :focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;

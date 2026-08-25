@@ -11,10 +11,10 @@ viewport por defecto 1280x720, testDir ./tests). Ejecución: arrancar dev server
 (npm run dev) y npx playwright test.
 
 Estructura verificada contra la página real (7 secciones en main): #inicio
-(hero), #contexto, #this, #estricto, #poo, #clases (NUEVA), #resumen (renumerada
+(hero), #contexto, #estricto, #this, #poo, #clases (NUEVA), #resumen (renumerada
 06). TOC sticky con 6 enlaces .toc\_\_link:
-Contexto/this/Estricto/POO/Clases/Resumen. Cada sección con aria-labelledby
-(hero-title, contexto-title, this-title, estricto-title, poo-title,
+Contexto/Estricto/this/POO/Clases/Resumen. Cada sección con aria-labelledby
+(hero-title, contexto-title, estricto-title, this-title, poo-title,
 clases-title, resumen-title).
 
 Componentes interactivos:
@@ -121,8 +121,8 @@ nuevo bloque).
 3. Contar las secciones dentro de main y verificar aria-labelledby de cada una
 
 
-    - expect: 7 secciones: #inicio (hero), #contexto, #this, #estricto, #poo, #clases, #resumen
-    - expect: Cada sección con aria-labelledby: hero-title, contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title
+    - expect: 7 secciones: #inicio (hero), #contexto, #estricto, #this, #poo, #clases, #resumen
+    - expect: Cada sección con aria-labelledby: hero-title, contexto-title, estricto-title, this-title, poo-title, clases-title, resumen-title
 
 4. Comprobar main#contenido, header.site-header, footer.site-footer y
    nav.toc[data-toc] aria-label="Índice de la lección"
@@ -135,7 +135,7 @@ nuevo bloque).
 5. Verificar los 6 enlaces .toc\_\_link del TOC (ACTUALIZADO: antes 5)
 
 
-    - expect: Enlaces exactos: "Contexto"→#contexto, "this"→#this, "Estricto"→#estricto, "POO"→#poo, "Clases"→#clases, "Resumen"→#resumen
+    - expect: Enlaces exactos: "Contexto"→#contexto, "Estricto"→#estricto, "this"→#this, "POO"→#poo, "Clases"→#clases, "Resumen"→#resumen
 
 6. Verificar el script type="application/ld+json"
 
@@ -208,14 +208,14 @@ nuevo bloque).
 
 
     - expect: h2#contexto-title "Contexto de Ejecución"; section__num "01 · Contexto de Ejecución"
-    - expect: h2#this-title "this y las 4 reglas"; Regla 1 "Por defecto"; "03 · Modo estricto vs normal"
+    - expect: h2#this-title "this y las 4 reglas"; Regla 1 "Por defecto"; "02 · Modo estricto vs normal"
     - expect: Código contiene: 'const ana = new Persona("Ana");', 'const fija = foo.bind(objeto);', 'let apodo = "Anita";', 'var despedida = "Chau";', 'Hola, soy Ana'
     - expect: ≥2 menciones de Persona en código (el bloque Arrow Functions usa Usuario y no altera el conteo)
 
 4. Verificar los 6 h2 y referencias MDN (ACTUALIZADO: antes 5)
 
 
-    - expect: h2s exactos: "Contexto de Ejecución", "this y las 4 reglas", "Modo estricto vs normal", "Puente a la POO", "Clases ES6: la POO moderna" (NUEVO), "Resumen (cheat sheet)"
+    - expect: h2s exactos: "Contexto de Ejecución", "Modo estricto vs normal", "this y las 4 reglas", "Puente a la POO", "Clases ES6: la POO moderna" (NUEVO), "Resumen (cheat sheet)"
     - expect: 4 enlaces MDN en footer (this, call/apply/bind, modo estricto, operador new) target="_blank" rel="noopener"
 
 ### 2. Stepper del call stack (#stack-demo)
@@ -411,7 +411,7 @@ nuevo bloque).
 
 **Steps:**
 
-1. Para cada .toc\_\_link (href #contexto, #this, #estricto, #poo, #clases,
+1. Para cada .toc\_\_link (href #contexto, #estricto, #this, #poo, #clases,
    #resumen): clic y esperar a que window.scrollY se estabilice
    (scroll-behavior: smooth; máx ~2s). ACTUALIZACIÓN MÍNIMA: añadir '#clases' a
    la lista LINKS y renombrar el test a "Los 6 enlaces…". El test actual NO
@@ -442,7 +442,7 @@ nuevo bloque).
 
     - expect: Ningún .toc__link.is-active al inicio (la banda 45-50% cae en el hero)
 
-2. Para cada objetivo (#contexto, #this, #estricto, #poo, #clases, #resumen):
+2. Para cada objetivo (#contexto, #estricto, #this, #poo, #clases, #resumen):
    window.scrollTo(0, seccion.offsetTop - 1) y esperar .is-active en su enlace
    (waitForFunction, timeout 3s). ACTUALIZACIÓN MÍNIMA: añadir 'clases' a la
    lista SECTIONS entre 'poo' y 'resumen'. El test actual NO falla, solo no
@@ -595,7 +595,7 @@ nuevo bloque).
    toHaveCount(5)→(6) y añadir '#clases' a la lista de hrefs)
 
 
-    - expect: Presentes con los mismos hrefs: #contexto, #this, #estricto, #poo, #clases, #resumen
+    - expect: Presentes con los mismos hrefs: #contexto, #estricto, #this, #poo, #clases, #resumen
 
 4. Comprobar el layout del stepper en móvil
 
@@ -636,7 +636,7 @@ nuevo bloque).
 2. Verificar la posición en el orden de secciones
 
 
-    - expect: Orden de ids en main: inicio, contexto, this, estricto, poo, clases, resumen (clases entre poo y resumen)
+    - expect: Orden de ids en main: inicio, contexto, estricto, this, poo, clases, resumen (clases entre poo y resumen)
 
 3. Leer el número de sección y el encabezado
 
@@ -777,14 +777,14 @@ nuevo bloque).
 
 
     - expect: Exactamente 1 h1 (hero-title)
-    - expect: 6 h2 (contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title)
+    - expect: 6 h2 (contexto-title, estricto-title, this-title, poo-title, clases-title, resumen-title)
     - expect: Todos los h3 cuelgan de un h2 inmediatamente anterior: ningún nivel saltado (no hay h3 antes del primer h2 ni h2→h4)
     - expect: Orden intacto: h1 → h2s → h3s, sin niveles que se salten (el nuevo h3 "Las Arrow Functions y el POO" no rompe — verificado)
 
 2. Para cada section de main, resolver su aria-labelledby
 
 
-    - expect: Los 7 aria-labelledby (hero-title, contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title) resuelven a un elemento existente
+    - expect: Los 7 aria-labelledby (hero-title, contexto-title, estricto-title, this-title, poo-title, clases-title, resumen-title) resuelven a un elemento existente
     - expect: El elemento referenciado es el encabezado de la sección
 
 #### 8.8. El sub-bloque "Las Arrow Functions y el POO": h3, código (saludarFlecha, call ignorado, TypeError) y callout "Trampa clásica" (NUEVO — rama feature/arrow-poo)

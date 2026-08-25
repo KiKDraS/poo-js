@@ -52,8 +52,8 @@
       <nav class="toc" data-toc aria-label="Índice de la lección">
         <ol class="toc__list">
           <li><a class="toc__link" href="#contexto">Contexto</a></li>
-          <li><a class="toc__link" href="#this">this</a></li>
           <li><a class="toc__link" href="#estricto">Estricto</a></li>
+          <li><a class="toc__link" href="#this">this</a></li>
           <li><a class="toc__link" href="#poo">POO</a></li>
           <li><a class="toc__link" href="#clases">Clases</a></li>
           <li><a class="toc__link" href="#resumen">Resumen</a></li>
@@ -240,7 +240,7 @@
             <p>El <strong>modo estricto</strong> existe para lo mismo: convertir errores silenciosos (como las
               globales implícitas) en errores visibles. Y la <em>zona muerta temporal</em> hace lo propio con
               <code>let</code>/<code>const</code>: usar una variable antes de su declaración no falla en silencio,
-              lanza un <code>ReferenceError</code>. <a href="#estricto">Ver sección 03 →</a>
+              lanza un <code>ReferenceError</code>. <a href="#estricto">Ver sección 02 →</a>
             </p>
           </div>
         </div>
@@ -254,133 +254,11 @@
       </div>
     </section>
 
-    <!-- ============ 02 · THIS Y LAS 4 REGLAS ============ -->
-    <section class="section" id="this" aria-labelledby="this-title">
-      <div class="container">
-        <header class="section__header" data-reveal>
-          <p class="section__num">02 · this y las 4 reglas</p>
-          <h2 id="this-title"><code>this</code> y las 4 reglas</h2>
-          <p class="section__lede">La llamada: <code>this</code> es quien contesta. Cambia a quién llamas, cambia quién
-            contesta.</p>
-        </header>
-
-        <div class="prose" data-reveal>
-          <p><code>this</code> es <strong>el objeto dueño del contexto de ejecución actual</strong>. No es la función.
-            No es el scope. Es el objeto que «recibe» la llamada.</p>
-          <p>Piensa en una llamada telefónica: cuando escribes <code>ana.saludar()</code>, es como llamar al teléfono de
-            ana — y quien contesta es ana. <code>this</code> es siempre quien contesta la llamada. No importa dónde se
-            definió la función: importa a quién llamaste. En cada ejemplo de abajo, el haz te muestra quién contesta.
-            La pregunta no es «¿qué es <code>this</code>?» sino «¿a quién le llamaste?».</p>
-        </div>
-
-        <div class="rules-grid">
-          <article class="rule-card" data-reveal>
-            <div class="rule-card__head">
-              <span class="rule-card__num">Regla 1</span>
-              <h3 class="rule-card__title">Por defecto</h3>
-            </div>
-            <div class="rule-card__body">
-              <p>Una llamada suelta, sin objeto delante: <code>foo()</code>.</p>
-              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">foo</span>() {
-  <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>);
-}
-<span class="tok-fn">foo</span>(); <span class="tok-cmt">// window (normal) · undefined (estricto)</span></code></pre>
-              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
-              <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
-              <p class="rule-card__answer">contesta la centralita global — <code>window</code> en modo normal ·
-                <code>undefined</code> en modo estricto
-              </p>
-            </div>
-            <div class="spotlight" aria-hidden="true">
-              <div class="spotlight__beam"></div>
-              <div class="spotlight__owner">contesta: window / nadie (undefined)</div>
-            </div>
-          </article>
-
-          <article class="rule-card" data-reveal>
-            <div class="rule-card__head">
-              <span class="rule-card__num">Regla 2</span>
-              <h3 class="rule-card__title">Implícita</h3>
-            </div>
-            <div class="rule-card__body">
-              <p>Llamada de método: el objeto va a la izquierda del punto.</p>
-              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">const</span> ana = { <span class="tok-prop">nombre</span>: <span class="tok-str">"Ana"</span>, <span class="tok-prop">saludar</span>: <span class="tok-kw">function</span> () { <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>.<span class="tok-prop">nombre</span>); } };
-ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — this = ana</span></code></pre>
-              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
-              <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
-              <p class="rule-card__answer">contesta el objeto a la izquierda del punto</p>
-            </div>
-            <div class="spotlight" aria-hidden="true">
-              <div class="spotlight__beam"></div>
-              <div class="spotlight__owner">contesta: ana</div>
-            </div>
-          </article>
-
-          <article class="rule-card" data-reveal>
-            <div class="rule-card__head">
-              <span class="rule-card__num">Regla 3</span>
-              <h3 class="rule-card__title">Explícita</h3>
-            </div>
-            <div class="rule-card__body">
-              <p>Forzada con <code>call</code>, <code>apply</code> o <code>bind</code>: tú decides quién es
-                <code>this</code>.
-              </p>
-              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">foo</span>() { <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>.<span class="tok-prop">nombre</span>); }
-<span class="tok-kw">const</span> objeto = { <span class="tok-prop">nombre</span>: <span class="tok-str">"objeto"</span> };
-<span class="tok-fn">foo</span>.<span class="tok-prop">call</span>(objeto); <span class="tok-cmt">// "objeto"</span>
-<span class="tok-fn">foo</span>.<span class="tok-prop">apply</span>(objeto, [<span class="tok-num">1</span>, <span class="tok-num">2</span>]); <span class="tok-cmt">// "objeto"</span>
-<span class="tok-kw">const</span> fija = <span class="tok-fn">foo</span>.<span class="tok-prop">bind</span>(objeto);
-<span class="tok-fn">fija</span>(); <span class="tok-cmt">// "objeto"</span></code></pre>
-              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
-              <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
-              <p class="rule-card__answer">contesta el objeto que pasas como primer argumento</p>
-            </div>
-            <div class="spotlight" aria-hidden="true">
-              <div class="spotlight__beam"></div>
-              <div class="spotlight__owner">contesta: el objeto que pasas</div>
-            </div>
-          </article>
-
-          <article class="rule-card" data-reveal>
-            <div class="rule-card__head">
-              <span class="rule-card__num">Regla 4</span>
-              <h3 class="rule-card__title">Con <code>new</code></h3>
-            </div>
-            <div class="rule-card__body">
-              <p>Con <code>new</code> delante, la función crea un objeto nuevo y <code>this</code> apunta a él.</p>
-              <pre
-                class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">Persona</span>(nombre) {
-  <span class="tok-kw">this</span>.<span class="tok-prop">nombre</span> = nombre;
-}
-<span class="tok-kw">const</span> ana = <span class="tok-kw">new</span> <span class="tok-fn">Persona</span>(<span class="tok-str">"Ana"</span>);
-<span class="tok-fn">console</span>.<span class="tok-prop">log</span>(ana.<span class="tok-prop">nombre</span>); <span class="tok-cmt">// "Ana"</span></code></pre>
-              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
-              <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
-              <p class="rule-card__answer">contesta la instancia nueva que acaba de crear <code>new</code></p>
-            </div>
-            <div class="spotlight" aria-hidden="true">
-              <div class="spotlight__beam"></div>
-              <div class="spotlight__owner">contesta: la instancia nueva</div>
-            </div>
-          </article>
-        </div>
-
-        <div class="callout callout--priority" data-reveal>
-          <p class="callout__label">Prioridad · ¿cuál gana?</p>
-          <p class="callout__text">Si dos reglas se pelean, gana siempre la de mayor jerarquía:
-            <strong><code>new</code> &gt; explícita &gt; implícita &gt; por defecto</strong>. Ejemplo: en
-            <code>objeto.metodo.call(otro)</code> hay llamada de método (implícita) <em>y</em> <code>call</code>
-            (explícita). Gana la explícita: suena el teléfono de <code>otro</code>.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ 03 · MODO ESTRICTO VS NORMAL ============ -->
+    <!-- ============ 02 · MODO ESTRICTO VS NORMAL ============ -->
     <section class="section section--grid" id="estricto" aria-labelledby="estricto-title">
       <div class="container">
         <header class="section__header" data-reveal>
-          <p class="section__num">03 · Modo estricto vs normal</p>
+          <p class="section__num">02 · Modo estricto vs normal</p>
           <h2 id="estricto-title">Modo estricto vs normal</h2>
           <p class="section__lede">El modo estricto es JavaScript con el volumen al máximo: los errores silenciosos se
             vuelven ruidosos.</p>
@@ -453,6 +331,135 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
           </p>
           <p>En modo estricto, ese mismo código lanza un <code>ReferenceError</code> al instante. El error es ruidoso
             a propósito: mejor que falle ahora, en desarrollo, a que falle en producción a las tres de la mañana.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 03 · THIS Y LAS 4 REGLAS ============ -->
+    <section class="section" id="this" aria-labelledby="this-title">
+      <div class="container">
+        <header class="section__header" data-reveal>
+          <p class="section__num">03 · this y las 4 reglas</p>
+          <h2 id="this-title"><code>this</code> y las 4 reglas</h2>
+          <p class="section__lede">La llamada: <code>this</code> es quien contesta. Cambia a quién llamas, cambia quién
+            contesta.</p>
+        </header>
+
+        <div class="prose" data-reveal>
+          <p><code>this</code> es <strong>el objeto dueño del contexto de ejecución actual</strong>. No es la función.
+            No es el scope. Es el objeto que «recibe» la llamada.</p>
+          <p>Piensa en una llamada telefónica: cuando escribes <code>ana.saludar()</code>, es como llamar al teléfono de
+            ana — y quien contesta es ana. <code>this</code> es siempre quien contesta la llamada. No importa dónde se
+            definió la función: importa a quién llamaste. En cada ejemplo de abajo, el haz te muestra quién contesta.
+            La pregunta no es «¿qué es <code>this</code>?» sino «¿a quién le llamaste?».</p>
+        </div>
+
+        <div class="rules-grid">
+          <article class="rule-card" data-reveal>
+            <div class="rule-card__head">
+              <span class="rule-card__num">Regla 1</span>
+              <h3 class="rule-card__title">Por defecto</h3>
+            </div>
+            <div class="rule-card__body">
+              <p>Una llamada suelta, sin objeto delante: <code>foo()</code>.</p>
+              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">foo</span>() {
+  <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>);
+}
+<span class="tok-fn">foo</span>(); <span class="tok-cmt">// window (normal) · undefined (estricto)</span></code></pre>
+              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
+              <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
+              <p class="rule-card__answer">contesta la centralita global — <code>window</code> en modo normal ·
+                <code>undefined</code> en modo estricto
+              </p>
+            </div>
+            <div class="spotlight" aria-hidden="true">
+              <div class="spotlight__beam"></div>
+              <div class="spotlight__owner">contesta: window / nadie (undefined)</div>
+            </div>
+          </article>
+
+          <article class="rule-card" data-reveal>
+            <div class="rule-card__head">
+              <span class="rule-card__num">Regla 2</span>
+              <h3 class="rule-card__title">Implícita</h3>
+            </div>
+            <div class="rule-card__body">
+              <p>Llamada de método: el objeto va a la izquierda del punto.</p>
+              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">const</span> ana = {
+  <span class="tok-prop">nombre</span>: <span class="tok-str">"Ana"</span>,
+  <span class="tok-prop">saludar</span>: <span class="tok-kw">function</span> () {
+    <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>.<span class="tok-prop">nombre</span>);
+  }
+};
+ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — this = ana</span></code></pre>
+              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
+              <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
+              <p class="rule-card__answer">contesta el objeto a la izquierda del punto</p>
+            </div>
+            <div class="spotlight" aria-hidden="true">
+              <div class="spotlight__beam"></div>
+              <div class="spotlight__owner">contesta: ana</div>
+            </div>
+          </article>
+
+          <article class="rule-card" data-reveal>
+            <div class="rule-card__head">
+              <span class="rule-card__num">Regla 3</span>
+              <h3 class="rule-card__title">Explícita</h3>
+            </div>
+            <div class="rule-card__body">
+              <p>Forzada con <code>call</code>, <code>apply</code> o <code>bind</code>: tú decides quién es
+                <code>this</code>.
+              </p>
+              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">foo</span>() {
+  <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>.<span class="tok-prop">nombre</span>);
+}
+<span class="tok-kw">const</span> objeto = { <span class="tok-prop">nombre</span>: <span class="tok-str">"objeto"</span> };
+<span class="tok-fn">foo</span>.<span class="tok-prop">call</span>(objeto); <span class="tok-cmt">// "objeto"</span>
+<span class="tok-fn">foo</span>.<span class="tok-prop">apply</span>(objeto, [<span class="tok-num">1</span>, <span class="tok-num">2</span>]); <span class="tok-cmt">// "objeto"</span>
+<span class="tok-kw">const</span> fija = <span class="tok-fn">foo</span>.<span class="tok-prop">bind</span>(objeto);
+<span class="tok-fn">fija</span>(); <span class="tok-cmt">// "objeto"</span></code></pre>
+              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
+              <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
+              <p class="rule-card__answer">contesta el objeto que pasas como primer argumento</p>
+            </div>
+            <div class="spotlight" aria-hidden="true">
+              <div class="spotlight__beam"></div>
+              <div class="spotlight__owner">contesta: el objeto que pasas</div>
+            </div>
+          </article>
+
+          <article class="rule-card" data-reveal>
+            <div class="rule-card__head">
+              <span class="rule-card__num">Regla 4</span>
+              <h3 class="rule-card__title">Con <code>new</code></h3>
+            </div>
+            <div class="rule-card__body">
+              <p>Con <code>new</code> delante, la función crea un objeto nuevo y <code>this</code> apunta a él.</p>
+              <pre
+                class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">Persona</span>(nombre) {
+  <span class="tok-kw">this</span>.<span class="tok-prop">nombre</span> = nombre;
+}
+<span class="tok-kw">const</span> ana = <span class="tok-kw">new</span> <span class="tok-fn">Persona</span>(<span class="tok-str">"Ana"</span>);
+<span class="tok-fn">console</span>.<span class="tok-prop">log</span>(ana.<span class="tok-prop">nombre</span>); <span class="tok-cmt">// "Ana"</span></code></pre>
+              <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
+              <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
+              <p class="rule-card__answer">contesta la instancia nueva que acaba de crear <code>new</code></p>
+            </div>
+            <div class="spotlight" aria-hidden="true">
+              <div class="spotlight__beam"></div>
+              <div class="spotlight__owner">contesta: la instancia nueva</div>
+            </div>
+          </article>
+        </div>
+
+        <div class="callout callout--priority" data-reveal>
+          <p class="callout__label">Prioridad · ¿cuál gana?</p>
+          <p class="callout__text">Si dos reglas se pelean, gana siempre la de mayor jerarquía:
+            <strong><code>new</code> &gt; explícita &gt; implícita &gt; por defecto</strong>. Ejemplo: en
+            <code>objeto.metodo.call(otro)</code> hay llamada de método (implícita) <em>y</em> <code>call</code>
+            (explícita). Gana la explícita: suena el teléfono de <code>otro</code>.
+          </p>
         </div>
       </div>
     </section>

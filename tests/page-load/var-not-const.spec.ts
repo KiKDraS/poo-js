@@ -33,7 +33,8 @@ test.describe('Carga de página', () => {
 
     const codeBlocks = await page.locator('.code-block').allTextContents();
     const code = codeBlocks.join('\n');
-    expect(code).toContain('const ana = { nombre: "Ana", saludar:'); // Regla 2
+    expect(code).toContain('const ana = {'); // Regla 2 (objeto literal, formato multi-línea)
+    expect(code).toContain('saludar: function () {');
     expect(code).toContain('const fija = foo.bind(objeto);'); // Regla 3
     expect(code).toContain('const ana = new Persona("Ana");'); // Regla 4 y #poo
     expect(code).toContain('let apodo = "Anita";'); // TDZ (hoisting)
@@ -65,9 +66,9 @@ test.describe('Carga de página', () => {
     );
     await expect(
       page.locator('.section__num', {
-        hasText: '03 · Modo estricto vs normal',
+        hasText: '02 · Modo estricto vs normal',
       })
-    ).toHaveText('03 · Modo estricto vs normal');
+    ).toHaveText('02 · Modo estricto vs normal');
     expect(code.split('Persona').length - 1).toBeGreaterThanOrEqual(2); // #poo y Regla 4
     expect(code).toContain('Hola, soy Ana');
 
@@ -75,8 +76,8 @@ test.describe('Carga de página', () => {
     const h2s = await page.locator('main h2').allTextContents();
     expect(h2s.map((t) => t.trim())).toEqual([
       'Contexto de Ejecución',
-      'this y las 4 reglas',
       'Modo estricto vs normal',
+      'this y las 4 reglas',
       'Puente a la POO',
       'Clases ES6: la POO moderna',
       'Resumen (cheat sheet)',
