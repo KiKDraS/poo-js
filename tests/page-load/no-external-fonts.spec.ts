@@ -31,22 +31,20 @@ test.describe('Carga de página', () => {
 
     // 2. Comprobar el script del módulo
     // En dev, Vite inyecta su propio cliente (/@vite/client); el único módulo de
-    // la app es {base}/src/js/main.js, antes de </body>.
+    // la app es {base}/src/main.js, cargado en <head>.
     const moduleScripts = page.locator('script[type="module"]');
     const moduleCount = await moduleScripts.count();
     expect(moduleCount).toBeGreaterThanOrEqual(1);
     for (let i = 0; i < moduleCount; i++) {
       const src = await moduleScripts.nth(i).getAttribute('src');
       expect(
-        src?.endsWith('/src/js/main.js') || src?.includes('/@vite/')
+        src?.endsWith('/src/main.js') || src?.includes('/@vite/')
       ).toBe(true);
     }
     await expect(
-      page.locator('script[type="module"][src$="/src/js/main.js"]')
+      page.locator('script[type="module"][src$="/src/main.js"]')
     ).toHaveCount(1);
-    expect(html.indexOf('/src/js/main.js')).toBeGreaterThan(
-      html.indexOf('</main>')
-    );
+    expect(html.indexOf('/src/main.js')).toBeLessThan(html.indexOf('<body'));
 
     // 3. Verificar el favicon (set completo en {base}/favicon/)
     const icons = page.locator('link[rel="icon"]');
