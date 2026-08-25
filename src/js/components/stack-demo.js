@@ -56,13 +56,14 @@ export function init(config = {}) {
   const lineEls = Array.from(codeEl.querySelectorAll("[data-line]"));
   let step = 0; // índice del paso actual
 
+  const isFirstStep = () => step === 0;
   const isLastStep = () => step >= STEPS.length - 1;
-  const nextLabel = () =>
-    isLastStep()
-      ? "Reiniciar"
-      : step === 0
-        ? "Ejecutar paso a paso"
-        : "Siguiente paso";
+
+  const nextLabel = () => {
+    if (isLastStep()) return "Reiniciar";
+    if (isFirstStep()) return "Ejecutar paso a paso";
+    return "Siguiente paso";
+  };
 
   const setActiveLine = (line) => {
     for (const el of lineEls) {
@@ -114,12 +115,17 @@ export function init(config = {}) {
     renderStep(step);
   };
 
-  nextBtn.addEventListener("click", next);
-  resetBtn.addEventListener("click", reset);
+  const onRootClick = (event) => {
+    const btn = event.target.closest("[data-next], [data-reset]");
+    if (!btn) return;
+    if (btn.matches("[data-next]")) next();
+    else reset();
+  };
+
+  root.addEventListener("click", onRootClick);
   renderStep(0);
 
   return () => {
-    nextBtn.removeEventListener("click", next);
-    resetBtn.removeEventListener("click", reset);
+    root.removeEventListener("click", onRootClick);
   };
 }
