@@ -1,0 +1,26 @@
+/* ============================================================
+   main.css — ÚNICA entrada de estilos (AGENTS.md).
+   Nunca importar CSS desde JS.
+   ============================================================ */
+
+/* Boilerplate: tokens, fuentes, reset, base */
+@import "./boilerplate/variables.css";
+@import "./boilerplate/fonts.css";
+@import "./boilerplate/reset.css";
+@import "./boilerplate/base.css";
+
+/* Layout: estructura de página */
+@import "./layout/header.css";
+@import "./layout/main.css";
+@import "./layout/footer.css";
+
+/* Componentes */
+@import "./components/button.css";
+@import "./components/hero.css";
+@import "./components/code-block.css";
+@import "./components/stack-diagram.css";
+@import "./components/stack-demo.css";
+@import "./components/rule-card.css";
+@import "./components/strict-toggle.css";
+@import "./components/callout.css";
+@import "./components/cheat-sheet.css";

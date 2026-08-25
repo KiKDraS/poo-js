@@ -1,0 +1,122 @@
+/* ============================================================
+   components/stack-demo.css — Stepper interactivo del stack
+   ============================================================ */
+
+.stack-demo {
+  padding: var(--space-6);
+  max-width: 100%;
+  overflow-x: auto;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+
+  /* Selectores explícitos: lightningcss downlevel compila
+     &__suffix como __suffix.parent (selector muerto). */
+
+  .stack-demo__layout {
+    display: grid;
+    gap: var(--space-6);
+
+    @media (min-width: 52rem) {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    }
+  }
+
+  .stack-demo__title {
+    margin-bottom: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-caption);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .stack-demo__stage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--color-bg-alt);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-md);
+  }
+
+  .stack-demo__stack {
+    display: grid;
+    gap: var(--space-2);
+    justify-items: stretch;
+    align-content: start;
+    min-height: 11rem;
+  }
+
+  .stack-demo__depth {
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-caption);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+
+    strong {
+      font-size: 1.2em;
+      color: var(--color-accent-strong);
+    }
+  }
+
+  .stack-demo__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    margin-top: var(--space-5);
+  }
+
+  .stack-demo__status {
+    flex-basis: 100%;
+    font-size: var(--font-size-body-sm);
+    color: var(--color-text-muted);
+
+    @media (min-width: 52rem) {
+      flex-basis: auto;
+      max-width: 32ch;
+      margin-left: auto;
+      text-align: right;
+    }
+  }
+}
+
+/* Pop-in / pop-out de frames (--duration-step, DESIGN.md §2.5) */
+.frame--enter {
+  animation: frame-in var(--duration-step) var(--ease-standard) both;
+}
+
+.frame--leave {
+  animation: frame-out var(--duration-step) var(--ease-standard) both;
+  pointer-events: none;
+}
+
+@keyframes frame-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.75rem) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes frame-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.96);
+  }
+}
