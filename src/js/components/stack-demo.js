@@ -51,7 +51,8 @@ const getNextButtonLabel = (activeStepIndex) => {
 
 const highlightActiveCodeLine = (codeLines, activeLine) => {
   for (const element of codeLines) {
-    element.classList.toggle("is-active", Number(element.dataset.line) === activeLine);
+    const isActiveLine = Number(element.dataset.line) === activeLine;
+    element.classList.toggle("is-active", isActiveLine);
   }
 };
 
