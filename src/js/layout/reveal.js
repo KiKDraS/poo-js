@@ -3,27 +3,28 @@
 // Si no hay soporte, muestra todo directamente (sin contenido oculto).
 
 export function init(config = {}) {
-  const targets = Array.from(document.querySelectorAll("[data-reveal]"));
-  if (!targets.length) return () => {};
+  const revealTargets = Array.from(document.querySelectorAll("[data-reveal]"));
+  if (!revealTargets.length) return () => {};
 
   if (!("IntersectionObserver" in window)) {
-    targets.forEach((el) => el.classList.add("is-visible"));
+    revealTargets.forEach((element) => element.classList.add("is-visible"));
     return () => {};
   }
 
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          io.unobserve(entry.target);
-        }
+  const onIntersect = (entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        revealObserver.unobserve(entry.target);
       }
-    },
-    { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
-  );
+    }
+  };
+  const revealObserver = new IntersectionObserver(onIntersect, {
+    threshold: 0.12,
+    rootMargin: "0px 0px -8% 0px",
+  });
 
-  targets.forEach((el) => io.observe(el));
+  revealTargets.forEach((element) => revealObserver.observe(element));
 
-  return () => io.disconnect();
+  return () => revealObserver.disconnect();
 }

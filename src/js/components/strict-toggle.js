@@ -6,32 +6,33 @@ export function init(config = {}) {
   const root = document.getElementById("strict-demo");
   if (!root) return () => {};
 
-  const sw = root.querySelector("[data-strict-switch]");
+  const toggleSwitch = root.querySelector("[data-strict-switch]");
   const badge = root.querySelector("[data-strict-badge]");
-  const outNormal = root.querySelector("[data-output-normal]");
-  const outStrict = root.querySelector("[data-output-strict]");
-  if (!sw || !badge || !outNormal || !outStrict) return () => {};
+  const normalOutput = root.querySelector("[data-output-normal]");
+  const strictOutput = root.querySelector("[data-output-strict]");
+  if (!toggleSwitch || !badge || !normalOutput || !strictOutput) return () => {};
 
-  const setMode = (strict) => {
-    sw.setAttribute("aria-checked", String(strict));
-    sw.setAttribute(
+  const setStrictMode = (strict) => {
+    toggleSwitch.setAttribute("aria-checked", String(strict));
+    toggleSwitch.setAttribute(
       "aria-label",
       strict ? "Cambiar a modo normal" : "Cambiar a modo estricto"
     );
     badge.textContent = strict ? "modo estricto" : "modo normal";
-    outNormal.hidden = strict;
-    outStrict.hidden = !strict;
+    normalOutput.hidden = strict;
+    strictOutput.hidden = !strict;
     root.classList.toggle("is-strict", strict);
 
     // Reinicia la animación de entrada de la salida visible.
-    const shown = strict ? outStrict : outNormal;
+    const shown = strict ? strictOutput : normalOutput;
     shown.classList.remove("console--pop");
     void shown.offsetWidth;
     shown.classList.add("console--pop");
   };
 
-  const onClick = () => setMode(sw.getAttribute("aria-checked") !== "true");
-  sw.addEventListener("click", onClick);
+  const handleSwitchClick = () =>
+    setStrictMode(toggleSwitch.getAttribute("aria-checked") !== "true");
+  toggleSwitch.addEventListener("click", handleSwitchClick);
 
-  return () => sw.removeEventListener("click", onClick);
+  return () => toggleSwitch.removeEventListener("click", handleSwitchClick);
 }

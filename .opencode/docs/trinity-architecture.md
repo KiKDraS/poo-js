@@ -53,6 +53,16 @@ refines, never overrides.
 - **Scope** — `globalThis` over `window`. No global pollution.
 - **ES6+** — map/filter/reduce over loops. Pure fns, immutability.
 
+### Readability
+
+- **Names state intent** — full descriptive names, no abbreviations
+  (`stackContainer`, `progressBar`, `activeStepIndex`). Exceptions: units
+  (`_MS`), web-standard terms (`DOM`, `URL`), loop locals.
+- **One job per function** — extract inline logic into small named functions;
+  `init()` wires, helpers do the work.
+- **Self-documenting over comments** — name says *what*, comment only *why*
+  (non-obvious). No restating comments.
+
 ## Assets
 
 - `src/assets/`: Vite-processed (images, fonts). Relative CSS paths.

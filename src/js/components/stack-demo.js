@@ -2,7 +2,7 @@
 // Stepper del call stack: máquina de estados sobre un array de pasos.
 // Renderiza los frames de la pila en el DOM y anuncia el paso en vivo.
 
-const FRAME_MS = 450; // = --duration-step (DESIGN.md §2.5)
+const FRAME_ANIMATION_MS = 450; // = --duration-step (DESIGN.md §2.5)
 
 // Un paso = pila (abajo → arriba) + línea de código activa + anuncio.
 // n ≤ 3 frames: escaneo inline O(n) permitido (perf-reliability §lookup).
@@ -43,39 +43,39 @@ export function init(config = {}) {
   const root = document.getElementById("stack-demo");
   if (!root) return () => {};
 
-  const stackEl = root.querySelector("[data-stack]");
-  const depthEl = root.querySelector("[data-depth]");
-  const statusEl = root.querySelector("[data-status]");
-  const nextBtn = root.querySelector("[data-next]");
-  const resetBtn = root.querySelector("[data-reset]");
-  const codeEl = root.querySelector("[data-code]");
-  if (!stackEl || !depthEl || !statusEl || !nextBtn || !resetBtn || !codeEl) {
+  const stackContainer = root.querySelector("[data-stack]");
+  const depthLabel = root.querySelector("[data-depth]");
+  const statusText = root.querySelector("[data-status]");
+  const nextButton = root.querySelector("[data-next]");
+  const resetButton = root.querySelector("[data-reset]");
+  const codeBlock = root.querySelector("[data-code]");
+  if (!stackContainer || !depthLabel || !statusText || !nextButton || !resetButton || !codeBlock) {
     return () => {};
   }
 
-  const lineEls = Array.from(codeEl.querySelectorAll("[data-line]"));
-  let step = 0; // índice del paso actual
+  const codeLines = Array.from(codeBlock.querySelectorAll("[data-line]"));
+  let activeStepIndex = 0;
 
-  const isFirstStep = () => step === 0;
-  const isLastStep = () => step >= STEPS.length - 1;
+  const isFirstStep = () => activeStepIndex === 0;
+  const isLastStep = () => activeStepIndex >= STEPS.length - 1;
 
-  const nextLabel = () => {
+  const getNextButtonLabel = () => {
     if (isLastStep()) return "Reiniciar";
     if (isFirstStep()) return "Ejecutar paso a paso";
     return "Siguiente paso";
   };
 
-  const setActiveLine = (line) => {
-    for (const el of lineEls) {
-      el.classList.toggle("is-active", Number(el.dataset.line) === line);
+  const highlightActiveCodeLine = (line) => {
+    for (const element of codeLines) {
+      element.classList.toggle("is-active", Number(element.dataset.line) === line);
     }
   };
 
-  // Reconcilia los frames del DOM con la pila del paso.
-  // Los que salen se animan y se eliminan al terminar (FRAME_MS).
-  const renderFrames = (stack) => {
+  // Los frames que salen se animan y se eliminan al terminar
+  // (FRAME_ANIMATION_MS): quitarlos al instante cortaría la animación de salida.
+  const synchronizeFramesWithStack = (stack) => {
     const visible = new Set(
-      Array.from(stackEl.children).map((el) => el.dataset.name)
+      Array.from(stackContainer.children).map((element) => element.dataset.name)
     );
     for (const name of stack) {
       if (!visible.has(name)) {
@@ -83,49 +83,49 @@ export function init(config = {}) {
         frame.className = "frame frame--enter";
         frame.dataset.name = name;
         frame.textContent = name;
-        stackEl.append(frame);
+        stackContainer.append(frame);
       }
     }
-    for (const el of Array.from(stackEl.children)) {
-      if (!stack.includes(el.dataset.name)) {
-        el.classList.add("frame--leave");
-        setTimeout(() => el.remove(), FRAME_MS);
+    for (const element of Array.from(stackContainer.children)) {
+      if (!stack.includes(element.dataset.name)) {
+        element.classList.add("frame--leave");
+        setTimeout(() => element.remove(), FRAME_ANIMATION_MS);
       }
     }
   };
 
-  const renderStep = (index) => {
+  const renderActiveStep = (index) => {
     const current = STEPS[index];
     const depth = current.stack.length;
-    setActiveLine(current.line);
-    renderFrames(current.stack);
-    depthEl.textContent = String(depth);
-    statusEl.textContent = `Paso ${index + 1} de ${STEPS.length} · profundidad ${depth}: ${current.text}`;
-    nextBtn.textContent = nextLabel();
-    resetBtn.disabled = step === 0;
+    highlightActiveCodeLine(current.line);
+    synchronizeFramesWithStack(current.stack);
+    depthLabel.textContent = String(depth);
+    statusText.textContent = `Paso ${index + 1} de ${STEPS.length} · profundidad ${depth}: ${current.text}`;
+    nextButton.textContent = getNextButtonLabel();
+    resetButton.disabled = activeStepIndex === 0;
   };
 
-  const next = () => {
-    step = isLastStep() ? 0 : step + 1;
-    renderStep(step);
+  const advanceToNextStep = () => {
+    activeStepIndex = isLastStep() ? 0 : activeStepIndex + 1;
+    renderActiveStep(activeStepIndex);
   };
 
-  const reset = () => {
-    step = 0;
-    renderStep(step);
+  const resetToFirstStep = () => {
+    activeStepIndex = 0;
+    renderActiveStep(activeStepIndex);
   };
 
-  const onRootClick = (event) => {
-    const btn = event.target.closest("[data-next], [data-reset]");
-    if (!btn) return;
-    if (btn.matches("[data-next]")) next();
-    else reset();
+  const handleControlsClick = (event) => {
+    const button = event.target.closest("[data-next], [data-reset]");
+    if (!button) return;
+    if (button.matches("[data-next]")) advanceToNextStep();
+    else resetToFirstStep();
   };
 
-  root.addEventListener("click", onRootClick);
-  renderStep(0);
+  root.addEventListener("click", handleControlsClick);
+  renderActiveStep(0);
 
   return () => {
-    root.removeEventListener("click", onRootClick);
+    root.removeEventListener("click", handleControlsClick);
   };
 }
