@@ -41,8 +41,7 @@ test.describe('Accesibilidad', () => {
       null,
       { timeout: 4000 }
     );
-    // NOTA (bug real documentado, no bloquea el test): el foco NO se mueve a
-    // main#contenido (activeElement queda en body): la página no aplica
-    // focus() al destino del skip-link (WCAG 2.4.1 incompleto).
+    // El foco SÍ se mueve a main#contenido (tabindex="-1"): WCAG 2.4.1.
+    await expect(page.locator('main#contenido')).toBeFocused();
   });
 });
