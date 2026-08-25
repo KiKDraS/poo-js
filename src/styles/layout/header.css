@@ -30,6 +30,7 @@
   display: block;
   height: 2rem;
   width: auto;
+  min-width: 75px;
 }
 
 /* TOC sticky: chips horizontales */
