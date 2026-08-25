@@ -20,7 +20,7 @@ Gate = reject format `[PERF-REL]`.
 
 ## Systemic audit checklist
 
-5 gates. One failure = rejection.
+6 gates. One failure = rejection.
 
 **1. Trinity** — all 3 layers touched? CSS in main.css? JS init in main.js? No
 dangling selectors?
@@ -41,7 +41,11 @@ rules: `trinity-architecture.md` §CSS.
 **5. JS** — `modern-javascript-patterns`. Declarative over imperative. try/catch
 on async. Sanitize DOM input. Event delegation over loop listeners: one
 parent listener, `data-*` targets, `event.target.closest('button')` for
-nested button tags. Full rules: `trinity-architecture.md` §JS.
+nested button tags. Full rules: `trinity-architecture.md` §JS +
+`performance-reliability.md` §Cognitive difficulty.
+
+**6. Perf-reliability** — run `performance-reliability.md` §Review checklist.
+Reject format `[PERF-REL]`.
 
 ## Output
 
