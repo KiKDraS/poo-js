@@ -5,13 +5,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contexto de Ejecución y this — JavaScript para principiantes</title>
-  <meta name="description"
-    content="Lección interactiva para principiantes de JavaScript: contexto de ejecución, call stack, las 4 reglas de this, modo estricto y el puente hacia la POO." />
+
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
   <link rel="shortcut icon" href="/favicon/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
   <link rel="manifest" href="/favicon/site.webmanifest" />
+
+  <!-- Meta data -->
+  <meta name="description"
+    content="Lección interactiva para principiantes de JavaScript: contexto de ejecución, call stack, las 4 reglas de this, modo estricto y el puente hacia la POO." />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="El Contexto de Ejecución y el misterio de this" />
   <meta property="og:description"
@@ -29,7 +33,12 @@
     "teaches": ["Contexto de ejecución", "Call stack", "this en JavaScript", "Modo estricto", "Funciones constructoras", "POO pre-ES6"]
   }
   </script>
+
+  <!-- Styles -->
   <link rel="stylesheet" href="/src/styles/main.css" />
+
+  <!-- Modules -->
+  <script type="module" src="/src/main.js"></script>
 </head>
 
 <body>
@@ -95,7 +104,8 @@
         <div class="prose" data-reveal>
           <p>Cuando JavaScript ejecuta tu código, no lo hace en el vacío. Cada porción de código corre dentro de un
             <strong>contexto de ejecución</strong>: el entorno que define qué variables existen, qué funciones se
-            pueden llamar y —lo más importante para esta lección— <strong>quién es <code>this</code></strong>.</p>
+            pueden llamar y —lo más importante para esta lección— <strong>quién es <code>this</code></strong>.
+          </p>
           <p>Cada vez que llamas a una función se crea un contexto nuevo. Y desde el primer instante existe un
             contexto <strong>global</strong>: el hogar del código que está fuera de cualquier función.</p>
         </div>
@@ -177,7 +187,8 @@
                   <code>var</code> (inicializada con <code>undefined</code>) y de las declaraciones de función.
                   <code>let</code>/<code>const</code> también hoistean, pero <strong>sin inicialización</strong>:
                   están en la <em>zona muerta temporal</em> (TDZ) hasta que su línea corre; usarlas antes lanza un
-                  <code>ReferenceError</code>. Se define <code>this</code> del contexto.</td>
+                  <code>ReferenceError</code>. Se define <code>this</code> del contexto.
+                </td>
               </tr>
               <tr>
                 <th scope="row">Ejecución</th>
@@ -217,17 +228,20 @@
               ejecución.</p>
             <p>Por eso <code>console.log(despedida)</code> no lanza un error: la variable ya existe (vale
               <code>undefined</code>). Y por eso <code>saludar()</code> funciona antes de su definición: la función
-              completa ya fue registrada.</p>
+              completa ya fue registrada.
+            </p>
             <p><code>var</code> hoistea e inicializa con <code>undefined</code>; <code>let</code> y
               <code>const</code> también hoistean, pero <strong>no se inicializan</strong>: viven en la
               <em>zona muerta temporal</em> (TDZ) hasta que su línea se ejecuta. Usarlas antes lanza un
-              <code>ReferenceError</code>.</p>
+              <code>ReferenceError</code>.
+            </p>
             <p>Un consejo: escribe las declaraciones arriba por legibilidad, pero ahora ya sabes por qué JavaScript no
               te lo exige.</p>
             <p>El <strong>modo estricto</strong> existe para lo mismo: convertir errores silenciosos (como las
               globales implícitas) en errores visibles. Y la <em>zona muerta temporal</em> hace lo propio con
               <code>let</code>/<code>const</code>: usar una variable antes de su declaración no falla en silencio,
-              lanza un <code>ReferenceError</code>. <a href="#estricto">Ver sección 03 →</a></p>
+              lanza un <code>ReferenceError</code>. <a href="#estricto">Ver sección 03 →</a>
+            </p>
           </div>
         </div>
 
@@ -274,7 +288,8 @@
               <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
               <p class="rule-card__answer-label">¿Quién es <code>this</code>?</p>
               <p class="rule-card__answer">contesta la centralita global — <code>window</code> en modo normal ·
-                <code>undefined</code> en modo estricto</p>
+                <code>undefined</code> en modo estricto
+              </p>
             </div>
             <div class="spotlight" aria-hidden="true">
               <div class="spotlight__beam"></div>
@@ -308,7 +323,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
             </div>
             <div class="rule-card__body">
               <p>Forzada con <code>call</code>, <code>apply</code> o <code>bind</code>: tú decides quién es
-                <code>this</code>.</p>
+                <code>this</code>.
+              </p>
               <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">foo</span>() { <span class="tok-fn">console</span>.<span class="tok-prop">log</span>(<span class="tok-kw">this</span>.<span class="tok-prop">nombre</span>); }
 <span class="tok-kw">const</span> objeto = { <span class="tok-prop">nombre</span>: <span class="tok-str">"objeto"</span> };
 <span class="tok-fn">foo</span>.<span class="tok-prop">call</span>(objeto); <span class="tok-cmt">// "objeto"</span>
@@ -332,7 +348,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
             </div>
             <div class="rule-card__body">
               <p>Con <code>new</code> delante, la función crea un objeto nuevo y <code>this</code> apunta a él.</p>
-              <pre class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">Persona</span>(nombre) {
+              <pre
+                class="code-block code-block--mini code-block--flat"><code><span class="tok-kw">function</span> <span class="tok-fn">Persona</span>(nombre) {
   <span class="tok-kw">this</span>.<span class="tok-prop">nombre</span> = nombre;
 }
 <span class="tok-kw">const</span> ana = <span class="tok-kw">new</span> <span class="tok-fn">Persona</span>(<span class="tok-str">"Ana"</span>);
@@ -353,7 +370,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
           <p class="callout__text">Si dos reglas se pelean, gana siempre la de mayor jerarquía:
             <strong><code>new</code> &gt; explícita &gt; implícita &gt; por defecto</strong>. Ejemplo: en
             <code>objeto.metodo.call(otro)</code> hay llamada de método (implícita) <em>y</em> <code>call</code>
-            (explícita). Gana la explícita: suena el teléfono de <code>otro</code>.</p>
+            (explícita). Gana la explícita: suena el teléfono de <code>otro</code>.
+          </p>
         </div>
       </div>
     </section>
@@ -371,7 +389,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
         <div class="prose" data-reveal>
           <p>El <strong>modo estricto</strong> es una versión más rigurosa de JavaScript. Se activa escribiendo
             <code>"use strict";</code> al principio de un script o de una función. En modo normal, JavaScript
-            «perdona» muchos errores en silencio; en modo estricto, esos mismos errores lanzan excepciones.</p>
+            «perdona» muchos errores en silencio; en modo estricto, esos mismos errores lanzan excepciones.
+          </p>
           <p>Mira el mismo código en ambos modos. Cambia solo una cosa: <code>this</code> en una llamada suelta.</p>
         </div>
 
@@ -430,7 +449,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
         <div class="prose" data-reveal>
           <p>En modo normal, si asignas una variable sin declararla, JavaScript crea una variable global
             <strong>en silencio</strong>: <code>contador = 1</code> contamina <code>window</code> y puede chocar con
-            otras partes de tu programa.</p>
+            otras partes de tu programa.
+          </p>
           <p>En modo estricto, ese mismo código lanza un <code>ReferenceError</code> al instante. El error es ruidoso
             a propósito: mejor que falle ahora, en desarrollo, a que falle en producción a las tres de la mañana.</p>
         </div>
@@ -450,7 +470,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Ana" — th
         <div class="prose" data-reveal>
           <p>Antes de ES6 no existía <code>class</code>. La programación orientada a objetos se hacía con
             <strong>funciones constructoras</strong> + <code>new</code> + <code>prototype</code>. Observa cómo
-            <code>this</code> conecta la función con el objeto nuevo:</p>
+            <code>this</code> conecta la función con el objeto nuevo:
+          </p>
         </div>
 
         <div class="split" data-reveal>
@@ -470,10 +491,12 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
           <div class="prose split__body">
             <p><code>new Persona("Ana")</code> hace tres cosas: crea un objeto nuevo, lo asigna a <code>this</code>
               dentro de la función y lo devuelve. Por eso <code>this.nombre = nombre</code> llena la instancia:
-              <code>ana.nombre</code> es <code>"Ana"</code>.</p>
+              <code>ana.nombre</code> es <code>"Ana"</code>.
+            </p>
             <p><code>Persona.prototype.saludar</code> comparte el método con todas las instancias. Dentro de él,
               <code>this</code> es la instancia que hizo la llamada: en <code>ana.saludar()</code>,
-              <code>this</code> = <code>ana</code> (regla implícita).</p>
+              <code>this</code> = <code>ana</code> (regla implícita).
+            </p>
             <p>Este es el patrón constructor + prototype que usaba todo JavaScript antes de las clases de ES6. Las
               clases modernas son azúcar sintáctico sobre esto.</p>
           </div>
@@ -481,7 +504,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
 
         <div class="callout callout--pattern" data-reveal>
           <p class="callout__label">Patrón</p>
-          <p class="callout__text"><strong><code>new</code> te da el objeto, <code>this</code> te deja llenarlo.</strong>
+          <p class="callout__text"><strong><code>new</code> te da el objeto, <code>this</code> te deja
+              llenarlo.</strong>
             La llamada llega al objeto recién creado por <code>new</code>: contesta la instancia nueva.</p>
           <div class="spotlight" aria-hidden="true">
             <div class="spotlight__beam"></div>
@@ -498,7 +522,8 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
           <p class="section__num">05 · Clases ES6</p>
           <h2 id="clases-title">Clases ES6: la POO moderna</h2>
           <p class="section__lede">La sintaxis que empaqueta todo lo pre-ES6 que ya viste: <code>new</code>,
-            <code>prototype</code> y <code>this</code> siguen ahí, con versión de cada pieza.</p>
+            <code>prototype</code> y <code>this</code> siguen ahí, con versión de cada pieza.
+          </p>
         </header>
 
         <div class="prose" data-reveal>
@@ -506,12 +531,14 @@ ana.<span class="tok-fn">saludar</span>(); <span class="tok-cmt">// "Hola, soy A
             conoces. <code>class</code> empaqueta el patrón constructor + <code>prototype</code> en una sintaxis
             limpia, y <code>this</code> dentro de un método sigue siendo la instancia (regla con
             <code>new</code>). Lo único que no es azúcar es <code>#</code>: privacidad real, no la convención
-            <code>_</code>.</p>
+            <code>_</code>.
+          </p>
         </div>
 
         <div class="split" data-reveal>
           <div class="split__code">
-            <pre class="code-block"><code><span class="tok-cmt">// ===== CLASE BASE — class — ES2015 (ES6) =====</span>
+            <pre
+              class="code-block"><code><span class="tok-cmt">// ===== CLASE BASE — class — ES2015 (ES6) =====</span>
 <span class="tok-kw">class</span> <span class="tok-fn">Persona</span> {
   <span class="tok-prop">planeta</span> = <span class="tok-str">"Tierra"</span>;            <span class="tok-cmt">// Campo público — ES2022</span>
 
@@ -562,14 +589,17 @@ ana.<span class="tok-kw">#</span><span class="tok-prop">secreto</span>;       <s
               con otra sintaxis. <code>new Estudiante("Ana", 25, "JavaScript")</code> crea el objeto,
               <code>this</code> dentro del <code>constructor</code> es la instancia (regla con <code>new</code>) y
               los métodos viven en el <code>prototype</code> compartido: la clase es azúcar, el motor es el
-              mismo.</p>
+              mismo.
+            </p>
             <p>Lo que <em>no</em> es azúcar: <code>#</code>. La privacidad real no es la convención
               <code>_</code> — un guion bajo solo avisa, no protege. <code>ana.#secreto</code> lanza
-              <code>SyntaxError</code> al parsear: ni siquiera llega a ejecutarse.</p>
+              <code>SyntaxError</code> al parsear: ni siquiera llega a ejecutarse.
+            </p>
             <p><code>static</code> cuelga el método de la clase, no de la instancia:
               <code>Persona.crear("Ana")</code>, no <code>ana.crear()</code>. Y <code>extends</code> encadena
               prototipos: <code>Estudiante</code> hereda de <code>Persona</code>, y <code>super</code> llama al
-              constructor o al método del padre.</p>
+              constructor o al método del padre.
+            </p>
           </div>
         </div>
 
@@ -577,7 +607,8 @@ ana.<span class="tok-kw">#</span><span class="tok-prop">secreto</span>;       <s
           <p class="callout__label">Patrón</p>
           <p class="callout__text"><strong>Clases = azúcar, debajo sigue el motor.</strong> <code>new</code> crea
             el objeto, <code>this</code> = quien contesta (la instancia), métodos en
-            <code>prototype</code>. La clase solo lo empaqueta con sintaxis limpia.</p>
+            <code>prototype</code>. La clase solo lo empaqueta con sintaxis limpia.
+          </p>
           <div class="spotlight" aria-hidden="true">
             <div class="spotlight__beam"></div>
             <div class="spotlight__owner">contesta: ana · instancia de Estudiante</div>
@@ -588,7 +619,8 @@ ana.<span class="tok-kw">#</span><span class="tok-prop">secreto</span>;       <s
 
         <div class="split" data-reveal>
           <div class="split__code">
-            <pre class="code-block"><code><span class="tok-cmt">// ===== ARROW FUNCTIONS Y POO — ES6 (ES2015) =====</span>
+            <pre
+              class="code-block"><code><span class="tok-cmt">// ===== ARROW FUNCTIONS Y POO — ES6 (ES2015) =====</span>
 <span class="tok-kw">class</span> <span class="tok-fn">Usuario</span> {
   <span class="tok-prop">nombre</span> = <span class="tok-str">"Ana"</span>;              <span class="tok-cmt">// Campo público — ES2022</span>
 
@@ -620,13 +652,17 @@ u.<span class="tok-fn">saludarFlecha</span>.<span class="tok-fn">call</span>({ <
           <div class="prose split__body">
             <p>La <strong>Arrow Function</strong> no tiene <code>this</code> propio: lo hereda del ámbito donde nació
               (léxico). Por eso no sigue las 4 reglas: la llamada no importa. <code>call</code>/<code>apply</code>/
-              <code>bind</code> se ignoran y <code>new</code> no existe (<code>TypeError</code>).</p>
+              <code>bind</code> se ignoran y <code>new</code> no existe (<code>TypeError</code>).
+            </p>
             <p>La <strong>ventaja real</strong>: podés pasar <code>saludarFlecha</code> suelta — a
               <code>setTimeout</code>, a un evento, a un <code>.map()</code> — y <code>this</code> sigue siendo la
-              instancia. El método normal solo funciona pegado a la llamada (<code>u.saludar()</code>); al pasarlo suelto
-              se pierde. La Arrow Function nace con <code>this</code> fijado: <strong>auto-bind</strong>, sin necesidad de
+              instancia. El método normal solo funciona pegado a la llamada (<code>u.saludar()</code>); al pasarlo
+              suelto
+              se pierde. La Arrow Function nace con <code>this</code> fijado: <strong>auto-bind</strong>, sin necesidad
+              de
               <code>.bind()</code>. El precio: es una copia por instancia (cada objeto lleva la suya, no comparte
-              <code>prototype</code>) y su <code>this</code> no es dinámico.</p>
+              <code>prototype</code>) y su <code>this</code> no es dinámico.
+            </p>
           </div>
         </div>
 
@@ -635,7 +671,8 @@ u.<span class="tok-fn">saludarFlecha</span>.<span class="tok-fn">call</span>({ <
           <p class="callout__text"><strong>Fuera de una clase, la Arrow Function no captura el objeto.</strong>
             <code>const o = { saluda: () =&gt; this.nombre }</code> — el <code>this</code> es el ámbito exterior
             (<code>window</code> en normal, <code>undefined</code> en estricto), no <code>o</code>. La clase es lo
-            que le da el <code>this</code> de la instancia al campo con Arrow Function.</p>
+            que le da el <code>this</code> de la instancia al campo con Arrow Function.
+          </p>
         </div>
 
         <h3 data-reveal>Versiones de ECMAScript</h3>
@@ -651,7 +688,9 @@ u.<span class="tok-fn">saludarFlecha</span>.<span class="tok-fn">call</span>({ <
             </thead>
             <tbody>
               <tr>
-                <th scope="row"><code>class</code>, <code>constructor</code>, <code>extends</code>, <code>super</code>, <code>static</code></th>
+                <th scope="row"><code>class</code>, <code>constructor</code>, <code>extends</code>, <code>super</code>,
+                  <code>static</code>
+                </th>
                 <td>ES6 · ES2015</td>
                 <td>2015</td>
               </tr>
@@ -720,7 +759,8 @@ u.<span class="tok-fn">saludarFlecha</span>.<span class="tok-fn">call</span>({ <
               <tr>
                 <th scope="row">Arrow Function (excepción)</th>
                 <td><code>() =&gt; {}</code></td>
-                <td>el <code>this</code> de donde nació (léxico) · ignora <code>call</code>/<code>bind</code> · no es constructor</td>
+                <td>el <code>this</code> de donde nació (léxico) · ignora <code>call</code>/<code>bind</code> · no es
+                  constructor</td>
               </tr>
             </tbody>
           </table>
@@ -775,18 +815,22 @@ u.<span class="tok-fn">saludarFlecha</span>.<span class="tok-fn">call</span>({ <
             <p class="mistakes__fix"><code>setTimeout(ana.saludar, 1000);</code> — cuando el temporizador ejecute la
               función, el objeto ya no está delante: <code>this</code> se pierde. Solución:
               <code>setTimeout(ana.saludar.bind(ana), 1000);</code> Alternativa: definilo como campo con Arrow
-              Function (auto-bind, sección 05).</p>
+              Function (auto-bind, sección 05).
+            </p>
           </li>
           <li class="mistakes__item" data-reveal>
             <p class="mistakes__title"><strong>Olvidar la prioridad</strong></p>
             <p class="mistakes__fix">Cuando se combinan reglas, recuerda el orden: <code>new</code> &gt; explícita
               &gt; implícita &gt; por defecto. En <code>objeto.metodo.call(otro)</code>, gana <code>call</code>:
-              <code>this</code> = <code>otro</code>.</p>
+              <code>this</code> = <code>otro</code>.
+            </p>
           </li>
           <li class="mistakes__item" data-reveal>
             <p class="mistakes__title"><strong>Confiar en <code>bind</code> con una Arrow Function</strong></p>
-            <p class="mistakes__fix"><code>f.bind(otro)</code> no cambia nada: la Arrow Function ignora la regla explícita, su
-              <code>this</code> ya está fijado al nacer. Si necesitas <code>this</code> dinámico, usa un método normal.</p>
+            <p class="mistakes__fix"><code>f.bind(otro)</code> no cambia nada: la Arrow Function ignora la regla
+              explícita, su
+              <code>this</code> ya está fijado al nacer. Si necesitas <code>this</code> dinámico, usa un método normal.
+            </p>
           </li>
         </ul>
 
@@ -794,7 +838,8 @@ u.<span class="tok-fn">saludarFlecha</span>.<span class="tok-fn">call</span>({ <
           <h3>Siguiente paso: TypeScript</h3>
           <p>TypeScript añade tipos a las clases: <code>implements</code>, <code>abstract</code> y
             <code>public</code>/<code>private</code>/<code>protected</code> en la firma. Ya tienes la base:
-            <code>this</code>, <code>prototype</code> y <code>new</code> funcionan igual.</p>
+            <code>this</code>, <code>prototype</code> y <code>new</code> funcionan igual.
+          </p>
         </div>
       </div>
     </section>
@@ -805,26 +850,25 @@ u.<span class="tok-fn">saludarFlecha</span>.<span class="tok-fn">call</span>({ <
     <div class="container footer__inner">
       <div>
         <p class="footer__love">Hecho con ♥ para estudiantes de JavaScript</p>
-        <p class="footer__note">Lección: Contexto de Ejecución, <code>this</code> y clases ES6 — de la mecánica pre-ES6 a la POO moderna.</p>
+        <p class="footer__note">Lección: Contexto de Ejecución, <code>this</code> y clases ES6 — de la mecánica pre-ES6
+          a la POO moderna.</p>
         <a class="footer__back" href="#inicio">Volver arriba ↑</a>
       </div>
       <nav aria-label="Referencias de documentación">
         <p class="footer__links-title">Referencias (MDN)</p>
         <ul class="footer__links">
-          <li><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Operators/this"
-              target="_blank" rel="noopener">MDN · this</a></li>
+          <li><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Operators/this" target="_blank"
+              rel="noopener">MDN · this</a></li>
           <li><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Function/call"
               target="_blank" rel="noopener">MDN · call / apply / bind</a></li>
-          <li><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Strict_mode"
-              target="_blank" rel="noopener">MDN · modo estricto</a></li>
-          <li><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Operators/new"
-              target="_blank" rel="noopener">MDN · operador new</a></li>
+          <li><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Strict_mode" target="_blank"
+              rel="noopener">MDN · modo estricto</a></li>
+          <li><a href="https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Operators/new" target="_blank"
+              rel="noopener">MDN · operador new</a></li>
         </ul>
       </nav>
     </div>
   </footer>
-
-  <script type="module" src="/src/js/main.js"></script>
 </body>
 
 </html>
