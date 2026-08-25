@@ -39,8 +39,9 @@ rules: `trinity-architecture.md` §CSS.
 **4. SEO** — title <60ch, desc 150-160ch. All imgs have alt+wh. Valid JSON-LD.
 
 **5. JS** — `modern-javascript-patterns`. Declarative over imperative. try/catch
-on async. Sanitize DOM input. Event delegation (`.closest()`) over loop
-listeners. Full rules: `trinity-architecture.md` §JS.
+on async. Sanitize DOM input. Event delegation over loop listeners: one
+parent listener, `data-*` targets, `event.target.closest('button')` for
+nested button tags. Full rules: `trinity-architecture.md` §JS.
 
 ## Output
 

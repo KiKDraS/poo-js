@@ -43,7 +43,12 @@ refines, never overrides.
 - Each module exports `initFn(config = {})` — guard missing DOM, return
   cleanup.
 - No `DOMContentLoaded` — ES modules deferred by default.
-- **Event delegation** — bind once to parent, `event.target.closest()`.
+- **Event delegation** — bind once to parent. No loop of listeners.
+  `event.target.closest()`.
+- **Identify via `data-*`** — `data-*` attrs over id/class for event targeting.
+- **closest over tagName** — buttons wrap tags (icon, span). Click target =
+  inner node, not button. Use `event.target.closest('button')`. Never
+  `target.tagName === 'BUTTON'`.
 - **Defensive** — async inside try/catch. Guard element presence.
 - **Scope** — `globalThis` over `window`. No global pollution.
 - **ES6+** — map/filter/reduce over loops. Pure fns, immutability.
