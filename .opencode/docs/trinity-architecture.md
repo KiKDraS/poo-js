@@ -1,8 +1,8 @@
 # Trinity Architecture
 
 Binding: `@frontend-dev` (write) + `@code-review` (audit). Violation → rework /
-REJECT. Contract = AGENTS.md structure + DESIGN.md aesthetics. This doc
-refines, never overrides.
+REJECT. Contract = AGENTS.md structure + DESIGN.md aesthetics. This doc refines,
+never overrides.
 
 ---
 
@@ -38,10 +38,9 @@ refines, never overrides.
 ## JS
 
 - `src/main.js` = init only. No DOM manipulate, no feature logic.
-- Module split: `layout/` (nav, scroll), `components/` (slider, modal),
-  `utils/` (debounce).
-- Each module exports `initFn(config = {})` — guard missing DOM, return
-  cleanup.
+- Module split: `layout/` (nav, scroll), `components/` (slider, modal), `utils/`
+  (debounce).
+- Each module exports `init()` — no params, guard missing DOM, return cleanup.
 - No `DOMContentLoaded` — ES modules deferred by default.
 - **Event delegation** — bind once to parent. No loop of listeners.
   `event.target.closest()`.
@@ -52,6 +51,22 @@ refines, never overrides.
 - **Defensive** — async inside try/catch. Guard element presence.
 - **Scope** — `globalThis` over `window`. No global pollution.
 - **ES6+** — map/filter/reduce over loops. Pure fns, immutability.
+
+### Readability
+
+- **Names state intent** — full descriptive names, no abbreviations
+  (`stackContainer`, `progressBar`, `activeStepIndex`). Exceptions: units
+  (`_MS`), web-standard terms (`DOM`, `URL`), loop locals.
+- **Helpers at module scope** — logic/render helpers live outside `init()` as
+  module-level functions taking the refs/state they need; `init()` only queries
+  DOM, holds state, wires listeners.
+- **No unnecessary params** — every parameter must be used. Drop unused ones
+  (e.g. `init()` takes no `config`).
+- **Self-documenting over comments** — name says _what_, comment only _why_
+  (non-obvious). No restating comments.
+- **Naming/condition rules** - (named predicates, small one-job fns) live in
+  `performance-reliability.md` §Cognitive difficulty. This doc refines, never
+  duplicates.
 
 ## Assets
 
