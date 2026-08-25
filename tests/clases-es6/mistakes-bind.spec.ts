@@ -15,7 +15,7 @@ test.describe('Clases ES6 (#clases)', () => {
     checkErrors();
   });
 
-  test('El error común "Confiar en bind con una flecha" es el último item de ul.mistakes', async ({
+  test('El error común "Confiar en bind con una Arrow Function" es el último item de ul.mistakes', async ({
     page,
   }) => {
     // 1. Navegar y localizar ul.mistakes de main section#resumen
@@ -27,13 +27,13 @@ test.describe('Clases ES6 (#clases)', () => {
     // 2. Leer el último item de la lista
     const last = mistakes.locator('li.mistakes__item').last();
     await expect(last.locator('.mistakes__title')).toHaveText(
-      'Confiar en bind con una flecha'
+      'Confiar en bind con una Arrow Function'
     );
     await expect(last.locator('.mistakes__fix')).toContainText(
       'f.bind(otro) no cambia nada'
     );
     await expect(last.locator('.mistakes__fix')).toContainText(
-      'la flecha ignora la regla explícita'
+      'la Arrow Function ignora la regla explícita'
     );
     await expect(last.locator('.mistakes__fix')).toContainText(
       'Si necesitas this dinámico, usa un método normal'
@@ -45,7 +45,7 @@ test.describe('Clases ES6 (#clases)', () => {
       'Extraer un método y perder this',
       'Pasar un método a setTimeout',
       'Olvidar la prioridad',
-      'Confiar en bind con una flecha',
+      'Confiar en bind con una Arrow Function',
     ]);
   });
 });

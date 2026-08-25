@@ -41,7 +41,7 @@ test.describe('Carga de página', () => {
 
     // 2. Buscar el token const en bloques de código
     // 9 tokens: 6 previos + `const u = new Usuario();`, `const f = u.saludar;`,
-    // `const g = u.saludarFlecha;` del bloque flechas
+    // `const g = u.saludarFlecha;` del bloque Arrow Functions
     const constCount = await page.evaluate(
       () =>
         [...document.querySelectorAll('.code-block span.tok-kw')].filter(

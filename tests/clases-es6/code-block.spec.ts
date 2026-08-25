@@ -22,7 +22,7 @@ test.describe('Clases ES6 (#clases)', () => {
     await page.goto('/');
     const codeBlock = page
       .locator('main section#clases pre.code-block')
-      .first(); // bloque Persona — el 2º (flechas) lo cubre el escenario 8.8
+      .first(); // bloque Persona — el 2º (Arrow Functions) lo cubre el escenario 8.8
     await expect(codeBlock).toBeVisible();
     await expect(codeBlock).toContainText('class Persona');
     await expect(codeBlock).toContainText('extends'); // class Estudiante extends Persona

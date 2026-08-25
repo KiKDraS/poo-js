@@ -15,7 +15,7 @@ test.describe('Clases ES6 (#clases)', () => {
     checkErrors();
   });
 
-  test('La tabla "Las 4 reglas de this de un vistazo" tiene la fila "Flecha (excepción)" al final', async ({
+  test('La tabla "Las 4 reglas de this de un vistazo" tiene la fila "Arrow Function (excepción)" al final', async ({
     page,
   }) => {
     // 1. Navegar y localizar la tabla de las 4 reglas en main section#resumen
@@ -38,11 +38,11 @@ test.describe('Clases ES6 (#clases)', () => {
       await expect(heads.nth(i)).toHaveAttribute('scope', 'col');
     }
 
-    // 2. Verificar las filas del tbody (5 filas: 4 reglas + flecha)
+    // 2. Verificar las filas del tbody (5 filas: 4 reglas + Arrow Function)
     const rows = table.locator('tbody tr');
     await expect(rows).toHaveCount(5);
     const last = rows.last();
-    await expect(last.locator('th')).toHaveText('Flecha (excepción)');
+    await expect(last.locator('th')).toHaveText('Arrow Function (excepción)');
     await expect(last.locator('th')).toHaveAttribute('scope', 'row');
     await expect(last.locator('td').nth(0)).toHaveText('() => {}');
     await expect(last.locator('td').nth(1)).toContainText(
@@ -58,7 +58,7 @@ test.describe('Clases ES6 (#clases)', () => {
       'Implícita',
       'Explícita',
       'Con new',
-      'Flecha (excepción)',
+      'Arrow Function (excepción)',
     ]);
   });
 });

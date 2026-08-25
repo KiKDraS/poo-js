@@ -51,8 +51,8 @@ test.describe('Clases ES6 (#clases)', () => {
     ).toBe(true);
 
     // 5. Contar elementos [data-reveal] dentro de #clases
-    // 9: header, prose, split Persona, callout--pattern, h3 flechas, split flechas,
-    //    callout--trap, h3 versiones, table-wrap (el sub-bloque de flechas añade 3)
+    // 9: header, prose, split Persona, callout--pattern, h3 Arrow Functions, split Arrow Functions,
+    //    callout--trap, h3 versiones, table-wrap (el sub-bloque de Arrow Functions añade 3)
     await expect(section.locator('[data-reveal]')).toHaveCount(9);
   });
 });
