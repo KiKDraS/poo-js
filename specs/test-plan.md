@@ -1,8 +1,8 @@
-# Test Plan — Landing «Contexto de Ejecución y this» (con sección Clases ES6)
+# Test Plan — Landing «Contexto de Ejecución y this» (con sección Clases ES6 + Arrow Functions y POO)
 
 ## Application Overview
 
-Landing page de una lección interactiva en español (JS para principiantes): Contexto de Ejecución + reglas de this (pre-ES6) + nueva sección 05 · Clases ES6 (#clases, rama feature/clases-es6). Vanilla HTML/CSS/JS + Vite, servida en http://localhost:5173 (baseURL en playwright.config.ts, proyecto chromium, viewport por defecto 1280x720, testDir ./tests). Ejecución: arrancar dev server (npm run dev) y npx playwright test.
+Landing page de una lección interactiva en español (JS para principiantes): Contexto de Ejecución + reglas de this (pre-ES6) + nueva sección 05 · Clases ES6 (#clases, rama feature/clases-es6) + sub-bloque "Las Arrow Functions y el POO" (rama feature/arrow-poo). Vanilla HTML/CSS/JS + Vite, servida en http://localhost:5173 (baseURL en playwright.config.ts, proyecto chromium, viewport por defecto 1280x720, testDir ./tests). Ejecución: arrancar dev server (npm run dev) y npx playwright test.
 
 Estructura verificada contra la página real (7 secciones en main): #inicio (hero), #contexto, #this, #estricto, #poo, #clases (NUEVA), #resumen (renumerada 06). TOC sticky con 6 enlaces .toc__link: Contexto/this/Estricto/POO/Clases/Resumen. Cada sección con aria-labelledby (hero-title, contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title).
 
@@ -13,11 +13,15 @@ Componentes interactivos:
 
 Sección nueva #clases (05 · Clases ES6: la POO moderna): bloque de código con clase Persona/Estudiante (class, constructor, #campo privado, #método privado, get, static, extends, super, override) y comentarios de versión ("ES2015 (ES6)", "ES2022", "SyntaxError — # es privado de verdad (ES2022)"); tabla timeline .sheet (Característica/Versión/Año, 4 filas, contiene "ES6 · ES2015" y "ES2022 (ES13)"); callout .callout--pattern con spotlight aria-hidden "contesta: ana · instancia de Estudiante"; 6 elementos [data-reveal] en la sección.
 
-NOTA RESPONSIVE (actualizada): el problema conocido de overflow horizontal en 375px (figure.stack-diagram, scrollWidth 454px > 375px) está CORREGIDO en esta rama — verificado en vivo: documentElement.scrollWidth == clientWidth == 375. tests/responsive/no-horizontal-overflow.spec.ts pasa (guarda de regresión). El texto viejo del plan que lo describía como fallando está desactualizado.
+Sub-bloque "Las Arrow Functions y el POO" (rama feature/arrow-poo, VERIFICADO en vivo): h3[data-reveal] "Las Arrow Functions y el POO" + div.split[data-reveal] con 2º pre.code-block (clase Usuario: método saludar vs campo con Arrow Function `saludarFlecha = () => {}`; la ventaja real: `setTimeout(u.saludar, 1000)` ("al ejecutarse, this se perdió → TypeError") vs `setTimeout(u.saludarFlecha, 1000)` ("\"Hola, soy Ana\" — this ya está fijado"); extracción `const f = u.saludar` (pierde this → TypeError/undefined) vs `const g = u.saludarFlecha` (conserva this); `u.saludarFlecha.call(...)` con comentario "call ignorado" — la línea `u.saludar.call(...)` ("call aplica") se ELIMINÓ; `new (() => {})` con comentario "TypeError — la Arrow Function no es constructor") + prose de 2 párrafos ("La Arrow Function no tiene this propio: lo hereda del ámbito donde nació (léxico)"; "La ventaja real: podés pasar saludarFlecha suelta — a setTimeout, a un evento, a un .map()", "auto-bind, sin necesidad de .bind()", "copia por instancia", "no comparte prototype", "this no es dinámico") + div.callout.callout--trap[data-reveal] "Trampa clásica" ("Fuera de una clase, la Arrow Function no captura el objeto.", `const o = { saluda: () => this.nombre }`). #clases pasa de 6 a 9 elementos [data-reveal] (3 nuevos: h3 Arrow Functions, split Arrow Functions, callout--trap).
+
+#resumen (06) actualizado en la rama: la tabla "Las 4 reglas de this de un vistazo" (caption exacto) gana la fila "Arrow Function (excepción)" al final del tbody (5 filas: Por defecto, Implícita, Explícita, Con new, Arrow Function (excepción); celdas: `() => {}` y "el this de donde nació (léxico) · ignora call/bind · no es constructor"); ul.mistakes gana el 4º li.mistakes__item "Confiar en bind con una Arrow Function" (fix: "f.bind(otro) no cambia nada… usa un método normal").
+
+NOTA RESPONSIVE (actualizada): el problema conocido de overflow horizontal en 375px (figure.stack-diagram, scrollWidth 454px > 375px) está CORREGIDO en esta rama — verificado en vivo: documentElement.scrollWidth == clientWidth == 375. tests/responsive/no-horizontal-overflow.spec.ts pasa (guarda de regresión). El texto viejo del plan que lo describía como fallando está desactualizado. El nuevo bloque de Arrow Functions no reintroduce overflow (.table-wrap y .code-block recortan).
 
 Modo oscuro: @media (prefers-color-scheme: dark) en variables.css → --color-bg #10151f (body rgb(16,21,31)); claro #f7f2e9 (rgb(247,242,233)). Sin Google Fonts CDN (0 referencias). JSON-LD: @type LearningResource, inLanguage es, teaches con 6 temas (sin entrada de clases — sin cambios en el test).
 
-REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN tests/page-load/page-structure.spec.ts, tests/page-load/var-not-const.spec.ts y tests/responsive/mobile-toc.spec.ts (asserts de conteo 6→7 secciones, 5→6 enlaces TOC, const 5→6 tokens, h2 5→6). NO fallan (pasan tal cual) tests/toc/navigation.spec.ts y tests/toc/scrollspy.spec.ts (iteran su propia lista fija); se recomienda extenderlos con #clases para cobertura. tests/responsive/no-horizontal-overflow.spec.ts ahora PASA. Sin cambios necesarios: hero, no-external-fonts, aria-live (único [aria-live] se mantiene), skip-link, stack-demo, strict-toggle, dark-mode, progress-bar, seed.
+REGRESIÓN (rama feature/arrow-poo, suite completa corrida en vivo: 3 FALLAN / 25 PASAN): tests/clases-es6/code-block.spec.ts (2 pre.code-block en #clases → strict mode violation; fix: `.first()`), tests/clases-es6/section.spec.ts (toHaveCount(6)→(9) de [data-reveal] en #clases), tests/page-load/var-not-const.spec.ts (constCount toBe(6)→(9): 3 const nuevos `u`, `f`, `g` del bloque Arrow Functions). NO fallan (pasan tal cual, verificado): page-structure, mobile-toc, toc, scrollspy, headings, timeline-table, callout (selector .callout--pattern sigue único), resumen, hero, no-external-fonts, aria-live, skip-link, stack-demo, strict-toggle, dark-mode, progress-bar, seed, no-horizontal-overflow (375px sigue sin overflow con el nuevo bloque).
 
 ## Test Scenarios
 
@@ -81,13 +85,13 @@ REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN 
 **Steps:**
   1. Contar <span class="tok-kw">var</span> en el HTML renderizado
     - expect: 2 ocurrencias (hoisting de var + contraste TDZ) — sin cambios, #clases no añade var
-  2. Contar el token const en bloques de código (ACTUALIZADO: antes 5)
-    - expect: 6 ocurrencias de <span class="tok-kw">const</span> (5 previos + `const ana = new Estudiante(...)` en #clases)
+  2. Contar el token const en bloques de código (ACTUALIZADO x2: 5 → 6 → 9)
+    - expect: 9 ocurrencias de <span class="tok-kw">const</span> (5 previos + `const ana = new Estudiante(...)` + 3 del bloque Arrow Functions: `const u = new Usuario();`, `const f = u.saludar;`, `const g = u.saludarFlecha;`) — VERIFICADO en vivo: 9
   3. Verificar strings clave en el texto visible y en los bloques de código
     - expect: h2#contexto-title "Contexto de Ejecución"; section__num "01 · Contexto de Ejecución"
     - expect: h2#this-title "this y las 4 reglas"; Regla 1 "Por defecto"; "03 · Modo estricto vs normal"
     - expect: Código contiene: 'const ana = new Persona("Ana");', 'const fija = foo.bind(objeto);', 'let apodo = "Anita";', 'var despedida = "Chau";', 'Hola, soy Ana'
-    - expect: ≥2 menciones de Persona en código
+    - expect: ≥2 menciones de Persona en código (el bloque Arrow Functions usa Usuario y no altera el conteo)
   4. Verificar los 6 h2 y referencias MDN (ACTUALIZADO: antes 5)
     - expect: h2s exactos: "Contexto de Ejecución", "this y las 4 reglas", "Modo estricto vs normal", "Puente a la POO", "Clases ES6: la POO moderna" (NUEVO), "Resumen (cheat sheet)"
     - expect: 4 enlaces MDN en footer (this, call/apply/bind, modo estricto, operador new) target="_blank" rel="noopener"
@@ -334,7 +338,7 @@ REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN 
 
 **Steps:**
   1. Contexto 375x812, medir documentElement.scrollWidth vs clientWidth
-    - expect: scrollWidth <= clientWidth — VERIFICADO en vivo en esta rama: 375 == 375 (el bug conocido figure.stack-diagram 454px está corregido; #clases no reintroduce overflow: .table-wrap y .code-block recortan)
+    - expect: scrollWidth <= clientWidth — VERIFICADO en vivo en esta rama: 375 == 375 (el bug conocido figure.stack-diagram 454px está corregido; #clases y el bloque de Arrow Functions no reintroducen overflow: .table-wrap y .code-block recortan)
   2. Verificar interacción en 375px
     - expect: Scroll vertical funcional; #stack-demo y #strict-demo operativos
 
@@ -357,8 +361,8 @@ REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN 
   4. Verificar aria-labelledby y su objetivo
     - expect: section#clases aria-labelledby="clases-title"
     - expect: document.getElementById("clases-title") existe (target resuelto)
-  5. Contar elementos [data-reveal] dentro de #clases
-    - expect: 6 elementos [data-reveal] (header, prose, split, callout, h3, table-wrap)
+  5. Contar elementos [data-reveal] dentro de #clases (ACTUALIZADO: antes 6)
+    - expect: 9 elementos [data-reveal] (header, prose, split Persona, callout--pattern, h3 Arrow Functions, split Arrow Functions, callout--trap, h3 versiones, table-wrap) — el sub-bloque de Arrow Functions añade 3
 
 #### 8.2. El enlace del TOC "Clases" está entre POO y Resumen y navega a #clases
 
@@ -379,7 +383,7 @@ REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN 
 **File:** `tests/clases-es6/code-block.spec.ts`
 
 **Steps:**
-  1. Localizar el .code-block de #clases y leer su texto (textContent del pre)
+  1. Localizar el .code-block de #clases y leer su texto (textContent del pre). ACTUALIZADO (feature/arrow-poo): ahora hay 2 pre.code-block → usar .first() (o filter hasText 'CLASE BASE'); el 2º (Arrow Functions) lo cubre el escenario 8.8.
     - expect: Contiene "class Persona"
     - expect: Contiene "extends" (class Estudiante extends Persona)
     - expect: Contiene "#secreto" (campo privado)
@@ -387,7 +391,7 @@ REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN 
     - expect: Contiene el comentario "ES2015 (ES6)" (p.ej. "class — ES2015 (ES6)")
     - expect: Contiene "ES2022" (campos privados, método privado)
     - expect: Contiene "SyntaxError — # es privado de verdad (ES2022)"
-  2. Verificar el hint del bloque
+  2. Verificar el hint del bloque (ACTUALIZADO: 2 hints idénticos → .first())
     - expect: p.code-block__hint "Pégalo en la consola de tu navegador o en Node."
 
 #### 8.4. La tabla timeline tiene 4 filas con cabeceras Característica/Versión/Año y las versiones clave
@@ -439,50 +443,100 @@ REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN 
     - expect: Exactamente 1 h1 (hero-title)
     - expect: 6 h2 (contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title)
     - expect: Todos los h3 cuelgan de un h2 inmediatamente anterior: ningún nivel saltado (no hay h3 antes del primer h2 ni h2→h4)
-    - expect: Orden intacto: h1 → h2s → h3s, sin niveles que se salten
+    - expect: Orden intacto: h1 → h2s → h3s, sin niveles que se salten (el nuevo h3 "Las Arrow Functions y el POO" no rompe — verificado)
   2. Para cada section de main, resolver su aria-labelledby
     - expect: Los 7 aria-labelledby (hero-title, contexto-title, this-title, estricto-title, poo-title, clases-title, resumen-title) resuelven a un elemento existente
     - expect: El elemento referenciado es el encabezado de la sección
 
-### 9. Regresión — ajustes mínimos a tests existentes (rama feature/clases-es6)
+#### 8.8. El sub-bloque "Las Arrow Functions y el POO": h3, código (saludarFlecha, call ignorado, TypeError) y callout "Trampa clásica" (NUEVO — rama feature/arrow-poo)
+
+**File:** `tests/clases-es6/arrow-block.spec.ts`
+
+**Steps:**
+  1. Navegar a la URL base y localizar main section#clases
+    - expect: h3 con texto "Las Arrow Functions y el POO" existe y es visible (2º h3 de #clases, tras el callout--pattern)
+    - expect: #clases tiene exactamente 2 pre.code-block (bloque Persona + bloque Arrow Functions)
+  2. Localizar el bloque de Arrow Functions (2º pre.code-block: filter hasText "ARROW FUNCTIONS Y POO" o .nth(1)) y leer su texto
+    - expect: Contiene "class Usuario"
+    - expect: Contiene "saludarFlecha = () => {" y el comentario "Campo con Arrow Function: this = la instancia (léxico)"
+    - expect: Contiene "La ventaja real: pasar el método suelto sin perder this"
+    - expect: Contiene "setTimeout(u.saludar, 1000)" con comentario "al ejecutarse, this se perdió → TypeError"
+    - expect: Contiene "setTimeout(u.saludarFlecha, 1000)" con comentario "\"Hola, soy Ana\" — this ya está fijado"
+    - expect: Contiene "const f = u.saludar;" con comentario "Método extraído: pierde this" y "TypeError / undefined (regla por defecto)"
+    - expect: Contiene "const g = u.saludarFlecha;" con comentario "Arrow Function extraída: conserva this" y "\"Hola, soy Ana\" (auto-bind)"
+    - expect: Contiene "u.saludarFlecha.call({ nombre: \"Beto\" })" y el comentario "call ignorado" (la línea u.saludar.call con "call aplica" se eliminó del bloque)
+    - expect: Contiene "new (() => {})" con el comentario "TypeError — la Arrow Function no es constructor"
+    - expect: p.code-block__hint del bloque: "Pégalo en la consola de tu navegador o en Node."
+  3. Verificar la prosa del 2º split (prose split__body del bloque de Arrow Functions)
+    - expect: Contiene "La Arrow Function no tiene this propio" y "lo hereda del ámbito donde nació (léxico)"
+    - expect: Contiene "call" / "apply" / "bind" se ignoran y "new" no existe ("TypeError")
+    - expect: Menciona "saludarFlecha suelta" como "copia por instancia" y "auto-bind"
+    - expect: Menciona "La ventaja real" (pasar saludarFlecha suelta a "setTimeout", a un evento, a un ".map()"), "auto-bind, sin necesidad de .bind()", "no comparte prototype" y "this no es dinámico" — ya NO contiene "setTimeout(this.saludarFlecha)"
+  4. Localizar el .callout--trap de #clases (inmediatamente tras el split de Arrow Functions)
+    - expect: callout__label: "Trampa clásica"
+    - expect: callout__text contiene "Fuera de una clase, la Arrow Function no captura el objeto."
+    - expect: callout__text contiene "const o = { saluda: () => this.nombre }" (HTML: `const o = { saluda: () =&gt; this.nombre }`)
+    - expect: callout__text menciona "window" (normal) y "undefined" (estricto) como ámbito exterior
+
+#### 8.9. La tabla "Las 4 reglas de this de un vistazo" tiene la fila "Arrow Function (excepción)" al final (NUEVO — rama feature/arrow-poo)
+
+**File:** `tests/clases-es6/resumen-flecha-row.spec.ts`
+
+**Steps:**
+  1. Navegar y localizar la tabla de las 4 reglas en main section#resumen (primer table.sheet; filter por caption "Las 4 reglas de this de un vistazo")
+    - expect: caption: "Las 4 reglas de this de un vistazo"
+    - expect: thead con "Regla", "Cómo llamas", "this es…" (scope="col")
+  2. Verificar las filas del tbody
+    - expect: 5 filas (4 reglas + Arrow Function) — ACTUALIZADO: antes 4
+    - expect: Última fila: th scope="row" con texto "Arrow Function (excepción)"
+    - expect: 2ª celda de la última fila: "() => {}"
+    - expect: 3ª celda de la última fila contiene "el this de donde nació (léxico)", "ignora call/bind" y "no es constructor"
+  3. Verificar que las 4 filas previas se mantienen en orden (regresión interna)
+    - expect: th en orden: "Por defecto", "Implícita", "Explícita", "Con new", "Arrow Function (excepción)"
+
+#### 8.10. El error común "Confiar en bind con una Arrow Function" es el último item de ul.mistakes (NUEVO — rama feature/arrow-poo)
+
+**File:** `tests/clases-es6/mistakes-bind.spec.ts`
+
+**Steps:**
+  1. Navegar y localizar ul.mistakes de main section#resumen
+    - expect: 4 li.mistakes__item — ACTUALIZADO: antes 3
+  2. Leer el último item de la lista
+    - expect: .mistakes__title: "Confiar en bind con una Arrow Function"
+    - expect: .mistakes__fix contiene "f.bind(otro) no cambia nada" y "la Arrow Function ignora la regla explícita"
+    - expect: .mistakes__fix contiene "Si necesitas this dinámico, usa un método normal"
+  3. Verificar que los 3 primeros items se mantienen (regresión interna)
+    - expect: Títulos en orden: "Extraer un método y perder this", "Pasar un método a setTimeout", "Olvidar la prioridad", "Confiar en bind con una Arrow Function"
+
+### 9. Regresión — ajustes mínimos a tests existentes (ramas feature/clases-es6 + feature/arrow-poo)
 
 **Seed:** `tests/seed.spec.ts`
 
-#### 9.1. page-structure.spec.ts: FALLA — actualizar conteos 6→7 y 5→6
+#### 9.1. page-structure.spec.ts: conteos 6→7 y 5→6 (ya aplicado en rama anterior — PASA)
 
 **File:** `tests/page-load/page-structure.spec.ts`
 
 **Steps:**
-  1. Cambiar el assert de secciones
-    - expect: toHaveCount(6) → toHaveCount(7) en main section
-    - expect: Añadir ['#clases', 'clases-title'] al array expected de aria-labelledby (entre poo y resumen)
-  2. Cambiar el assert del TOC
-    - expect: toHaveCount(5) → toHaveCount(6) en .toc__link
-    - expect: Añadir ['Clases', '#clases'] al array toc (entre POO y Resumen)
-  3. JSON-LD: sin cambios
-    - expect: teaches sigue teniendo 6 temas (el JSON-LD no se tocó en la rama) — no tocar este assert
+  1. Verificar el estado actual en la rama
+    - expect: PASA sin cambios: 7 secciones, 6 enlaces TOC, aria-labelledby completo, JSON-LD teaches con 6 temas
 
-#### 9.2. var-not-const.spec.ts: FALLA — const 5→6 y h2 5→6
+#### 9.2. var-not-const.spec.ts: const 5→6 (ya aplicado en rama feature/clases-es6) — ver 9.10 para el fallo de esta rama
 
 **File:** `tests/page-load/var-not-const.spec.ts`
 
 **Steps:**
-  1. Cambiar el conteo de const
-    - expect: expect(constCount).toBe(5) → toBe(6) (el bloque de #clases añade `const ana = new Estudiante(...)`, verificado en vivo)
-  2. Cambiar la lista de h2
-    - expect: Añadir 'Clases ES6: la POO moderna' al array de h2s, entre 'Puente a la POO' y 'Resumen (cheat sheet)'
-  3. Sin cambios en var ni MDN
-    - expect: varCount sigue siendo 2; 4 enlaces MDN intactos
+  1. Verificar el estado del cambio previo (rama feature/clases-es6)
+    - expect: constCount toBe(6) ya aplicado y h2s con 'Clases ES6: la POO moderna' ya en la lista
+  2. Estado actual en feature/arrow-poo: FALLA de nuevo (6 vs 9 en vivo) — el fix de esta rama está documentado en el escenario 9.10
+    - expect: No aplicar aquí el fix 6→9 dos veces; ejecutar una sola vez (9.10)
 
-#### 9.3. mobile-toc.spec.ts: FALLA — enlaces 5→6
+#### 9.3. mobile-toc.spec.ts: enlaces 5→6 (ya aplicado — PASA)
 
 **File:** `tests/responsive/mobile-toc.spec.ts`
 
 **Steps:**
-  1. Cambiar el conteo de .toc__link
-    - expect: toHaveCount(5) → toHaveCount(6)
-  2. Añadir '#clases' al bucle de hrefs
-    - expect: El bucle verifica también .toc__link[href="#clases"] existe
+  1. Verificar el estado actual en la rama
+    - expect: PASA sin cambios: 6 enlaces .toc__link con #clases incluido
 
 #### 9.4. navigation.spec.ts: NO falla — extensión recomendada (opcional)
 
@@ -505,15 +559,13 @@ REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN 
   2. Extensión mínima recomendada
     - expect: Añadir 'clases' a SECTIONS entre 'poo' y 'resumen' para que la banda central de #clases active su enlace
 
-#### 9.6. no-horizontal-overflow.spec.ts: ahora PASA (nota del plan desactualizada)
+#### 9.6. no-horizontal-overflow.spec.ts: PASA (nota del plan desactualizada ya corregida)
 
 **File:** `tests/responsive/no-horizontal-overflow.spec.ts`
 
 **Steps:**
   1. Evaluar el estado actual en la rama
-    - expect: PASA: scrollWidth 375 <= clientWidth 375 en 375px (bug figure.stack-diagram corregido en desarrollos anteriores; el guard de regresión del test ya era correcto)
-  2. Actualizar solo la documentación del plan
-    - expect: El texto "PROBLEMA CONOCIDO … actualmente FALLA" de la overview/responsive queda obsoleto: sustituirlo por la nota de que pasa y vigila la regresión (ver overview actualizada)
+    - expect: PASA: scrollWidth 375 <= clientWidth 375 en 375px (bug figure.stack-diagram corregido; el bloque de Arrow Functions no reintroduce overflow)
 
 #### 9.7. Sin cambios necesarios (verificado)
 
@@ -526,3 +578,36 @@ REGRESIÓN (rama feature/clases-es6, verificado contra la página real): FALLAN 
     - expect: aria-live.spec.ts: sigue habiendo un único [aria-live] (#clases no añade)
     - expect: skip-link, stack-demo (4), strict-toggle (3), progress-bar, dark-mode (2): sin relación con #clases
     - expect: seed.spec.ts: título y status 200 intactos
+
+#### 9.8. section.spec.ts: FALLA — toHaveCount(6) → (9) de [data-reveal] en #clases (NUEVO — rama feature/arrow-poo)
+
+**File:** `tests/clases-es6/section.spec.ts`
+
+**Steps:**
+   1. Cambiar el assert de conteo (línea ~54)
+    - expect: await expect(section.locator('[data-reveal]')).toHaveCount(6) → toHaveCount(9)
+    - expect: Actualizar el comentario de la línea 5: "(header, prose, split, callout, h3, table-wrap)" → "(header, prose, split Persona, callout--pattern, h3 Arrow Functions, split Arrow Functions, callout--trap, h3 versiones, table-wrap)"
+   2. No tocar el resto del test (ids de secciones, .section__num, aria-labelledby intactos — verificado en vivo)
+
+#### 9.9. code-block.spec.ts: FALLA — strict mode violation (2 pre.code-block) → .first() (NUEVO — rama feature/arrow-poo)
+
+**File:** `tests/clases-es6/code-block.spec.ts`
+
+**Steps:**
+   1. Cambiar el selector del bloque de código (línea 23)
+    - expect: page.locator('main section#clases pre.code-block') → añadir .first() (el bloque Persona es el primero; el 2º es el de Arrow Functions que cubre 8.8)
+    - expect: Alternativa robusta: filter({ hasText: 'CLASE BASE' }) si se quiere explícito
+   2. Cambiar el selector del hint (línea 37) — ahora hay 2 p.code-block__hint idénticos
+    - expect: page.locator('main section#clases p.code-block__hint') → añadir .first() (toHaveText pasa con ambos al ser idénticos, pero .first() evita ambigüedad futura)
+   3. No tocar las aserciones de texto (class Persona, extends, #secreto, super, ES2015, ES2022, SyntaxError) — verificadas en vivo contra el bloque Persona
+
+#### 9.10. var-not-const.spec.ts: FALLA — constCount toBe(6) → toBe(9) (NUEVO — rama feature/arrow-poo)
+
+**File:** `tests/page-load/var-not-const.spec.ts`
+
+**Steps:**
+   1. Cambiar el assert de const (línea 49)
+    - expect: expect(constCount).toBe(6) → toBe(9) — el bloque de Arrow Functions añade 3 tokens const: `const u = new Usuario();`, `const f = u.saludar;`, `const g = u.saludarFlecha;` (verificado en vivo: 6+3=9)
+   2. No tocar el resto (varCount 2, strings clave, h2s, MDN 4) — verificados en vivo, siguen pasando
+    - expect: 'const ana = new Persona("Ana");' sigue presente en el bloque Persona
+    - expect: Persona ≥2 menciones (el bloque Arrow Functions usa Usuario, no altera el conteo)

@@ -584,6 +584,60 @@ ana.<span class="tok-kw">#</span><span class="tok-prop">secreto</span>;       <s
           </div>
         </div>
 
+        <h3 data-reveal>Las Arrow Functions y el POO</h3>
+
+        <div class="split" data-reveal>
+          <div class="split__code">
+            <pre class="code-block"><code><span class="tok-cmt">// ===== ARROW FUNCTIONS Y POO — ES6 (ES2015) =====</span>
+<span class="tok-kw">class</span> <span class="tok-fn">Usuario</span> {
+  <span class="tok-prop">nombre</span> = <span class="tok-str">"Ana"</span>;              <span class="tok-cmt">// Campo público — ES2022</span>
+
+  <span class="tok-fn">saludar</span>() {                  <span class="tok-cmt">// Método: this = quien llama (implícita)</span>
+    <span class="tok-kw">return</span> <span class="tok-str">`Hola, soy ${</span><span class="tok-kw">this</span>.<span class="tok-prop">nombre</span><span class="tok-str">}`</span>;
+  }
+
+  <span class="tok-fn">saludarFlecha</span> = () => {      <span class="tok-cmt">// Campo con Arrow Function: this = la instancia (léxico)</span>
+    <span class="tok-kw">return</span> <span class="tok-str">`Hola, soy ${</span><span class="tok-kw">this</span>.<span class="tok-prop">nombre</span><span class="tok-str">}`</span>;
+  };
+}
+
+<span class="tok-kw">const</span> u = <span class="tok-kw">new</span> <span class="tok-fn">Usuario</span>();
+
+<span class="tok-cmt">// La ventaja real: pasar el método suelto sin perder this</span>
+<span class="tok-fn">setTimeout</span>(u.<span class="tok-fn">saludar</span>, <span class="tok-num">1000</span>);        <span class="tok-cmt">// al ejecutarse, this se perdió → TypeError</span>
+<span class="tok-fn">setTimeout</span>(u.<span class="tok-fn">saludarFlecha</span>, <span class="tok-num">1000</span>);  <span class="tok-cmt">// "Hola, soy Ana" — this ya está fijado</span>
+
+<span class="tok-kw">const</span> f = u.<span class="tok-fn">saludar</span>;               <span class="tok-cmt">// Método extraído: pierde this</span>
+f();                               <span class="tok-cmt">// TypeError / undefined (regla por defecto)</span>
+
+<span class="tok-kw">const</span> g = u.<span class="tok-fn">saludarFlecha</span>;         <span class="tok-cmt">// Arrow Function extraída: conserva this</span>
+g();                               <span class="tok-cmt">// "Hola, soy Ana" (auto-bind)</span>
+
+u.<span class="tok-fn">saludarFlecha</span>.<span class="tok-fn">call</span>({ <span class="tok-prop">nombre</span>: <span class="tok-str">"Beto"</span> });  <span class="tok-cmt">// "Hola, soy Ana" — call ignorado</span>
+<span class="tok-kw">new</span> (() => {})                            <span class="tok-cmt">// TypeError — la Arrow Function no es constructor</span></code></pre>
+            <p class="code-block__hint">Pégalo en la consola de tu navegador o en Node.</p>
+          </div>
+          <div class="prose split__body">
+            <p>La <strong>Arrow Function</strong> no tiene <code>this</code> propio: lo hereda del ámbito donde nació
+              (léxico). Por eso no sigue las 4 reglas: la llamada no importa. <code>call</code>/<code>apply</code>/
+              <code>bind</code> se ignoran y <code>new</code> no existe (<code>TypeError</code>).</p>
+            <p>La <strong>ventaja real</strong>: podés pasar <code>saludarFlecha</code> suelta — a
+              <code>setTimeout</code>, a un evento, a un <code>.map()</code> — y <code>this</code> sigue siendo la
+              instancia. El método normal solo funciona pegado a la llamada (<code>u.saludar()</code>); al pasarlo suelto
+              se pierde. La Arrow Function nace con <code>this</code> fijado: <strong>auto-bind</strong>, sin necesidad de
+              <code>.bind()</code>. El precio: es una copia por instancia (cada objeto lleva la suya, no comparte
+              <code>prototype</code>) y su <code>this</code> no es dinámico.</p>
+          </div>
+        </div>
+
+        <div class="callout callout--trap" data-reveal>
+          <p class="callout__label">Trampa clásica</p>
+          <p class="callout__text"><strong>Fuera de una clase, la Arrow Function no captura el objeto.</strong>
+            <code>const o = { saluda: () =&gt; this.nombre }</code> — el <code>this</code> es el ámbito exterior
+            (<code>window</code> en normal, <code>undefined</code> en estricto), no <code>o</code>. La clase es lo
+            que le da el <code>this</code> de la instancia al campo con Arrow Function.</p>
+        </div>
+
         <h3 data-reveal>Versiones de ECMAScript</h3>
         <div class="table-wrap" data-reveal>
           <table class="sheet">
@@ -663,6 +717,11 @@ ana.<span class="tok-kw">#</span><span class="tok-prop">secreto</span>;       <s
                 <td><code>new Foo()</code></td>
                 <td>el objeto nuevo</td>
               </tr>
+              <tr>
+                <th scope="row">Arrow Function (excepción)</th>
+                <td><code>() =&gt; {}</code></td>
+                <td>el <code>this</code> de donde nació (léxico) · ignora <code>call</code>/<code>bind</code> · no es constructor</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -715,13 +774,19 @@ ana.<span class="tok-kw">#</span><span class="tok-prop">secreto</span>;       <s
             <p class="mistakes__title"><strong>Pasar un método a <code>setTimeout</code></strong></p>
             <p class="mistakes__fix"><code>setTimeout(ana.saludar, 1000);</code> — cuando el temporizador ejecute la
               función, el objeto ya no está delante: <code>this</code> se pierde. Solución:
-              <code>setTimeout(ana.saludar.bind(ana), 1000);</code></p>
+              <code>setTimeout(ana.saludar.bind(ana), 1000);</code> Alternativa: definilo como campo con Arrow
+              Function (auto-bind, sección 05).</p>
           </li>
           <li class="mistakes__item" data-reveal>
             <p class="mistakes__title"><strong>Olvidar la prioridad</strong></p>
             <p class="mistakes__fix">Cuando se combinan reglas, recuerda el orden: <code>new</code> &gt; explícita
               &gt; implícita &gt; por defecto. En <code>objeto.metodo.call(otro)</code>, gana <code>call</code>:
               <code>this</code> = <code>otro</code>.</p>
+          </li>
+          <li class="mistakes__item" data-reveal>
+            <p class="mistakes__title"><strong>Confiar en <code>bind</code> con una Arrow Function</strong></p>
+            <p class="mistakes__fix"><code>f.bind(otro)</code> no cambia nada: la Arrow Function ignora la regla explícita, su
+              <code>this</code> ya está fijado al nacer. Si necesitas <code>this</code> dinámico, usa un método normal.</p>
           </li>
         </ul>
 
