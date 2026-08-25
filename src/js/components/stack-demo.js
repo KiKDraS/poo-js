@@ -39,7 +39,63 @@ const STEPS = [
   },
 ];
 
-export function init(config = {}) {
+const isFirstStep = (activeStepIndex) => activeStepIndex === 0;
+
+const isLastStep = (activeStepIndex) => activeStepIndex >= STEPS.length - 1;
+
+const getNextButtonLabel = (activeStepIndex) => {
+  if (isLastStep(activeStepIndex)) return "Reiniciar";
+  if (isFirstStep(activeStepIndex)) return "Ejecutar paso a paso";
+  return "Siguiente paso";
+};
+
+const highlightActiveCodeLine = (codeLines, activeLine) => {
+  for (const element of codeLines) {
+    element.classList.toggle("is-active", Number(element.dataset.line) === activeLine);
+  }
+};
+
+// Los frames que salen se animan y se eliminan al terminar
+// (FRAME_ANIMATION_MS): quitarlos al instante cortaría la animación de salida.
+const synchronizeFramesWithStack = (stackContainer, stack) => {
+  const visibleFrameNames = new Set(
+    Array.from(stackContainer.children).map((element) => element.dataset.name)
+  );
+  for (const frameName of stack) {
+    if (!visibleFrameNames.has(frameName)) {
+      const frame = document.createElement("div");
+      frame.className = "frame frame--enter";
+      frame.dataset.name = frameName;
+      frame.textContent = frameName;
+      stackContainer.append(frame);
+    }
+  }
+  for (const element of Array.from(stackContainer.children)) {
+    if (!stack.includes(element.dataset.name)) {
+      element.classList.add("frame--leave");
+      setTimeout(() => element.remove(), FRAME_ANIMATION_MS);
+    }
+  }
+};
+
+const renderActiveStep = (
+  activeStepIndex,
+  { stackContainer, depthLabel, statusText, nextButton, resetButton, codeLines }
+) => {
+  const currentStep = STEPS[activeStepIndex];
+  const stackDepth = currentStep.stack.length;
+  highlightActiveCodeLine(codeLines, currentStep.line);
+  synchronizeFramesWithStack(stackContainer, currentStep.stack);
+  depthLabel.textContent = String(stackDepth);
+  statusText.textContent = `Paso ${activeStepIndex + 1} de ${STEPS.length} · profundidad ${stackDepth}: ${currentStep.text}`;
+  nextButton.textContent = getNextButtonLabel(activeStepIndex);
+  resetButton.disabled = isFirstStep(activeStepIndex);
+};
+
+const nextStepIndex = (activeStepIndex) =>
+  isLastStep(activeStepIndex) ? 0 : activeStepIndex + 1;
+
+export function init() {
   const root = document.getElementById("stack-demo");
   if (!root) return () => {};
 
@@ -49,81 +105,37 @@ export function init(config = {}) {
   const nextButton = root.querySelector("[data-next]");
   const resetButton = root.querySelector("[data-reset]");
   const codeBlock = root.querySelector("[data-code]");
-  if (!stackContainer || !depthLabel || !statusText || !nextButton || !resetButton || !codeBlock) {
+  if (
+    !stackContainer ||
+    !depthLabel ||
+    !statusText ||
+    !nextButton ||
+    !resetButton ||
+    !codeBlock
+  ) {
     return () => {};
   }
 
-  const codeLines = Array.from(codeBlock.querySelectorAll("[data-line]"));
+  const elements = {
+    stackContainer,
+    depthLabel,
+    statusText,
+    nextButton,
+    resetButton,
+    codeLines: Array.from(codeBlock.querySelectorAll("[data-line]")),
+  };
   let activeStepIndex = 0;
-
-  const isFirstStep = () => activeStepIndex === 0;
-  const isLastStep = () => activeStepIndex >= STEPS.length - 1;
-
-  const getNextButtonLabel = () => {
-    if (isLastStep()) return "Reiniciar";
-    if (isFirstStep()) return "Ejecutar paso a paso";
-    return "Siguiente paso";
-  };
-
-  const highlightActiveCodeLine = (line) => {
-    for (const element of codeLines) {
-      element.classList.toggle("is-active", Number(element.dataset.line) === line);
-    }
-  };
-
-  // Los frames que salen se animan y se eliminan al terminar
-  // (FRAME_ANIMATION_MS): quitarlos al instante cortaría la animación de salida.
-  const synchronizeFramesWithStack = (stack) => {
-    const visible = new Set(
-      Array.from(stackContainer.children).map((element) => element.dataset.name)
-    );
-    for (const name of stack) {
-      if (!visible.has(name)) {
-        const frame = document.createElement("div");
-        frame.className = "frame frame--enter";
-        frame.dataset.name = name;
-        frame.textContent = name;
-        stackContainer.append(frame);
-      }
-    }
-    for (const element of Array.from(stackContainer.children)) {
-      if (!stack.includes(element.dataset.name)) {
-        element.classList.add("frame--leave");
-        setTimeout(() => element.remove(), FRAME_ANIMATION_MS);
-      }
-    }
-  };
-
-  const renderActiveStep = (index) => {
-    const current = STEPS[index];
-    const depth = current.stack.length;
-    highlightActiveCodeLine(current.line);
-    synchronizeFramesWithStack(current.stack);
-    depthLabel.textContent = String(depth);
-    statusText.textContent = `Paso ${index + 1} de ${STEPS.length} · profundidad ${depth}: ${current.text}`;
-    nextButton.textContent = getNextButtonLabel();
-    resetButton.disabled = activeStepIndex === 0;
-  };
-
-  const advanceToNextStep = () => {
-    activeStepIndex = isLastStep() ? 0 : activeStepIndex + 1;
-    renderActiveStep(activeStepIndex);
-  };
-
-  const resetToFirstStep = () => {
-    activeStepIndex = 0;
-    renderActiveStep(activeStepIndex);
-  };
 
   const handleControlsClick = (event) => {
     const button = event.target.closest("[data-next], [data-reset]");
     if (!button) return;
-    if (button.matches("[data-next]")) advanceToNextStep();
-    else resetToFirstStep();
+    const isNextButton = button.matches("[data-next]");
+    activeStepIndex = isNextButton ? nextStepIndex(activeStepIndex) : 0;
+    renderActiveStep(activeStepIndex, elements);
   };
 
   root.addEventListener("click", handleControlsClick);
-  renderActiveStep(0);
+  renderActiveStep(activeStepIndex, elements);
 
   return () => {
     root.removeEventListener("click", handleControlsClick);

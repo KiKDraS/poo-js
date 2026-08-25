@@ -40,7 +40,7 @@ refines, never overrides.
 - `src/main.js` = init only. No DOM manipulate, no feature logic.
 - Module split: `layout/` (nav, scroll), `components/` (slider, modal),
   `utils/` (debounce).
-- Each module exports `initFn(config = {})` — guard missing DOM, return
+- Each module exports `init()` — no params, guard missing DOM, return
   cleanup.
 - No `DOMContentLoaded` — ES modules deferred by default.
 - **Event delegation** — bind once to parent. No loop of listeners.
@@ -60,6 +60,14 @@ refines, never overrides.
   (`_MS`), web-standard terms (`DOM`, `URL`), loop locals.
 - **One job per function** — extract inline logic into small named functions;
   `init()` wires, helpers do the work.
+- **Helpers at module scope** — logic/render helpers live outside `init()` as
+  module-level functions taking the refs/state they need; `init()` only queries
+  DOM, holds state, wires listeners.
+- **No unnecessary params** — every parameter must be used. Drop unused ones
+  (e.g. `init()` takes no `config`).
+- **Named conditions** — assign conditions to descriptive boolean consts
+  (`const hasScrollableDistance = max > 0`, `const isNextButton = …`) when the
+  raw expression wouldn't read as intent. Don't name trivially-obvious guards.
 - **Self-documenting over comments** — name says *what*, comment only *why*
   (non-obvious). No restating comments.
 

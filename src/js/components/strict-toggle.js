@@ -2,7 +2,31 @@
 // Interruptor modo normal / modo estricto: cambia la insignia del bloque
 // de código, la salida visible y el estado aria del switch.
 
-export function init(config = {}) {
+const setStrictMode = (
+  isStrict,
+  { toggleSwitch, badge, normalOutput, strictOutput, root }
+) => {
+  toggleSwitch.setAttribute("aria-checked", String(isStrict));
+  toggleSwitch.setAttribute(
+    "aria-label",
+    isStrict ? "Cambiar a modo normal" : "Cambiar a modo estricto"
+  );
+  badge.textContent = isStrict ? "modo estricto" : "modo normal";
+  normalOutput.hidden = isStrict;
+  strictOutput.hidden = !isStrict;
+  root.classList.toggle("is-strict", isStrict);
+
+  // Reinicia la animación de entrada de la salida visible.
+  const shownOutput = isStrict ? strictOutput : normalOutput;
+  shownOutput.classList.remove("console--pop");
+  void shownOutput.offsetWidth;
+  shownOutput.classList.add("console--pop");
+};
+
+const isStrictModeActive = (toggleSwitch) =>
+  toggleSwitch.getAttribute("aria-checked") === "true";
+
+export function init() {
   const root = document.getElementById("strict-demo");
   if (!root) return () => {};
 
@@ -12,26 +36,11 @@ export function init(config = {}) {
   const strictOutput = root.querySelector("[data-output-strict]");
   if (!toggleSwitch || !badge || !normalOutput || !strictOutput) return () => {};
 
-  const setStrictMode = (strict) => {
-    toggleSwitch.setAttribute("aria-checked", String(strict));
-    toggleSwitch.setAttribute(
-      "aria-label",
-      strict ? "Cambiar a modo normal" : "Cambiar a modo estricto"
-    );
-    badge.textContent = strict ? "modo estricto" : "modo normal";
-    normalOutput.hidden = strict;
-    strictOutput.hidden = !strict;
-    root.classList.toggle("is-strict", strict);
-
-    // Reinicia la animación de entrada de la salida visible.
-    const shown = strict ? strictOutput : normalOutput;
-    shown.classList.remove("console--pop");
-    void shown.offsetWidth;
-    shown.classList.add("console--pop");
+  const elements = { toggleSwitch, badge, normalOutput, strictOutput, root };
+  const handleSwitchClick = () => {
+    const isStrictMode = isStrictModeActive(toggleSwitch);
+    setStrictMode(!isStrictMode, elements);
   };
-
-  const handleSwitchClick = () =>
-    setStrictMode(toggleSwitch.getAttribute("aria-checked") !== "true");
   toggleSwitch.addEventListener("click", handleSwitchClick);
 
   return () => toggleSwitch.removeEventListener("click", handleSwitchClick);
