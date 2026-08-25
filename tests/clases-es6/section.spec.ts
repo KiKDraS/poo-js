@@ -51,6 +51,8 @@ test.describe('Clases ES6 (#clases)', () => {
     ).toBe(true);
 
     // 5. Contar elementos [data-reveal] dentro de #clases
-    await expect(section.locator('[data-reveal]')).toHaveCount(6);
+    // 9: header, prose, split Persona, callout--pattern, h3 flechas, split flechas,
+    //    callout--trap, h3 versiones, table-wrap (el sub-bloque de flechas añade 3)
+    await expect(section.locator('[data-reveal]')).toHaveCount(9);
   });
 });

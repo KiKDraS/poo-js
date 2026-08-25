@@ -40,13 +40,15 @@ test.describe('Carga de página', () => {
     expect(code).toContain('var despedida = "Chau";'); // hoisting (excepción)
 
     // 2. Buscar el token const en bloques de código
+    // 9 tokens: 6 previos + `const u = new Usuario();`, `const f = u.saludar;`,
+    // `const g = u.saludarFlecha;` del bloque flechas
     const constCount = await page.evaluate(
       () =>
         [...document.querySelectorAll('.code-block span.tok-kw')].filter(
           (el) => el.textContent === 'const'
         ).length
     );
-    expect(constCount).toBe(6);
+    expect(constCount).toBe(9);
 
     // 3. Verificar strings clave en el texto visible
     await expect(page.locator('h2#contexto-title')).toHaveText(

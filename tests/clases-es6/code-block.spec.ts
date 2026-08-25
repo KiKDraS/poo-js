@@ -20,7 +20,9 @@ test.describe('Clases ES6 (#clases)', () => {
   }) => {
     // 1. Localizar el .code-block de #clases y leer su texto (textContent del pre)
     await page.goto('/');
-    const codeBlock = page.locator('main section#clases pre.code-block');
+    const codeBlock = page
+      .locator('main section#clases pre.code-block')
+      .first(); // bloque Persona — el 2º (flechas) lo cubre el escenario 8.8
     await expect(codeBlock).toBeVisible();
     await expect(codeBlock).toContainText('class Persona');
     await expect(codeBlock).toContainText('extends'); // class Estudiante extends Persona
@@ -34,7 +36,7 @@ test.describe('Clases ES6 (#clases)', () => {
 
     // 2. Verificar el hint del bloque
     await expect(
-      page.locator('main section#clases p.code-block__hint')
+      page.locator('main section#clases p.code-block__hint').first() // 2 hints idénticos → .first()
     ).toHaveText('Pégalo en la consola de tu navegador o en Node.');
   });
 });
