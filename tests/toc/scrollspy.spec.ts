@@ -4,7 +4,7 @@ import { scaleXOf, watchPageErrors } from '../support';
 // spec: specs/test-plan.md
 // seed: tests/seed.spec.ts
 
-const SECTIONS = ['contexto', 'this', 'estricto', 'poo', 'resumen'];
+const SECTIONS = ['contexto', 'this', 'estricto', 'poo', 'clases', 'resumen'];
 
 test.describe('TOC sticky y scrollspy', () => {
   let checkErrors: () => void;

@@ -43,9 +43,16 @@ test.describe('Responsive (viewport 375px)', () => {
     }));
     expect(dims.scrollWidth).toBeGreaterThan(dims.clientWidth);
 
-    // 3. Verificar los 5 enlaces .toc__link
-    await expect(page.locator('.toc__link')).toHaveCount(5);
-    for (const href of ['#contexto', '#this', '#estricto', '#poo', '#resumen']) {
+    // 3. Verificar los 6 enlaces .toc__link
+    await expect(page.locator('.toc__link')).toHaveCount(6);
+    for (const href of [
+      '#contexto',
+      '#this',
+      '#estricto',
+      '#poo',
+      '#clases',
+      '#resumen',
+    ]) {
       await expect(page.locator(`.toc__link[href="${href}"]`)).toHaveCount(1);
     }
 

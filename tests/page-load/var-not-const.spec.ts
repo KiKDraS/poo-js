@@ -46,7 +46,7 @@ test.describe('Carga de página', () => {
           (el) => el.textContent === 'const'
         ).length
     );
-    expect(constCount).toBe(5);
+    expect(constCount).toBe(6);
 
     // 3. Verificar strings clave en el texto visible
     await expect(page.locator('h2#contexto-title')).toHaveText(
@@ -69,13 +69,14 @@ test.describe('Carga de página', () => {
     expect(code.split('Persona').length - 1).toBeGreaterThanOrEqual(2); // #poo y Regla 4
     expect(code).toContain('Hola, soy Ana');
 
-    // 4. Verificar los 5 h2 y referencias MDN
+    // 4. Verificar los 6 h2 y referencias MDN
     const h2s = await page.locator('main h2').allTextContents();
     expect(h2s.map((t) => t.trim())).toEqual([
       'Contexto de Ejecución',
       'this y las 4 reglas',
       'Modo estricto vs normal',
       'Puente a la POO',
+      'Clases ES6: la POO moderna',
       'Resumen (cheat sheet)',
     ]);
     const mdn = page.locator('footer a[href^="https://developer.mozilla.org"]');

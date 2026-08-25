@@ -30,13 +30,14 @@ test.describe('Carga de página', () => {
 
     // 3. Contar las secciones dentro de main
     const sections = page.locator('main section');
-    await expect(sections).toHaveCount(6);
+    await expect(sections).toHaveCount(7);
     const expected = [
       ['#inicio', 'hero-title'],
       ['#contexto', 'contexto-title'],
       ['#this', 'this-title'],
       ['#estricto', 'estricto-title'],
       ['#poo', 'poo-title'],
+      ['#clases', 'clases-title'],
       ['#resumen', 'resumen-title'],
     ];
     for (const [id, labelId] of expected) {
@@ -61,14 +62,15 @@ test.describe('Carga de página', () => {
       page.locator('nav.toc[data-toc]')
     ).toHaveAttribute('aria-label', 'Índice de la lección');
 
-    // 5. Verificar los 5 enlaces .toc__link del TOC
+    // 5. Verificar los 6 enlaces .toc__link del TOC
     const tocLinks = page.locator('.toc__link');
-    await expect(tocLinks).toHaveCount(5);
+    await expect(tocLinks).toHaveCount(6);
     const toc = [
       ['Contexto', '#contexto'],
       ['this', '#this'],
       ['Estricto', '#estricto'],
       ['POO', '#poo'],
+      ['Clases', '#clases'],
       ['Resumen', '#resumen'],
     ];
     for (let i = 0; i < toc.length; i++) {

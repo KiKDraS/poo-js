@@ -4,7 +4,7 @@ import { watchPageErrors } from '../support';
 // spec: specs/test-plan.md
 // seed: tests/seed.spec.ts
 
-const LINKS = ['#contexto', '#this', '#estricto', '#poo', '#resumen'];
+const LINKS = ['#contexto', '#this', '#estricto', '#poo', '#clases', '#resumen'];
 
 test.describe('TOC sticky y scrollspy', () => {
   let checkErrors: () => void;
@@ -17,7 +17,7 @@ test.describe('TOC sticky y scrollspy', () => {
     checkErrors();
   });
 
-  test('Los 5 enlaces del TOC navegan a sus secciones', async ({ page }) => {
+  test('Los 6 enlaces del TOC navegan a sus secciones', async ({ page }) => {
     await page.goto('/');
 
     // 1. Para cada .toc__link: clic y esperar a que window.scrollY se estabilice
