@@ -44,16 +44,19 @@ export function init(config = {}) {
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  // Skip link: mueve el foco al main (WCAG 2.4.1). El navegador ya hace el
-  // scroll del ancla; preventScroll evita el doble salto.
-  const skip = document.querySelector(".skip-link");
+  // Skip link: mueve el foco al main (WCAG 2.4.1). Delegado — un listener en
+  // document, target via [data-skip-link]. El navegador ya hace el scroll del
+  // ancla; preventScroll evita el doble salto.
   const main = document.querySelector("main#contenido");
-  const onSkipClick = () => main.focus({ preventScroll: true });
-  if (skip && main) skip.addEventListener("click", onSkipClick);
+  const onSkipClick = (event) => {
+    if (!main || !event.target.closest("[data-skip-link]")) return;
+    main.focus({ preventScroll: true });
+  };
+  document.addEventListener("click", onSkipClick);
 
   return () => {
     spy.disconnect();
     window.removeEventListener("scroll", onScroll);
-    if (skip && main) skip.removeEventListener("click", onSkipClick);
+    document.removeEventListener("click", onSkipClick);
   };
 }
