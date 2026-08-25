@@ -33,12 +33,12 @@ Strict. No files outside schema.
 
 **Shared directives:**
 
-| Scope                              | Location                                          |
-| ---------------------------------- | ------------------------------------------------- |
-| All agents                         | this AGENTS.md                                    |
-| `frontend-dev`+`code-review` arch  | `.opencode/docs/trinity-architecture.md`          |
-| `frontend-dev`+`code-review` perf  | `.opencode/docs/performance-reliability.md`       |
-| Single agent                       | its agent file                                    |
+| Scope                             | Location                                    |
+| --------------------------------- | ------------------------------------------- |
+| All agents                        | this AGENTS.md                              |
+| `frontend-dev`+`code-review` arch | `.opencode/docs/trinity-architecture.md`    |
+| `frontend-dev`+`code-review` perf | `.opencode/docs/performance-reliability.md` |
+| Single agent                      | its agent file                              |
 
 Convention: directive for all agents → AGENTS.md. ≥2 agents → doc in
 `.opencode/docs/` + binding line in each agent file. 1 agent → agent file.
