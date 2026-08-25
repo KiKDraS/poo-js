@@ -12,6 +12,9 @@ project architecture, DESIGN.md aesthetics, TS strictness, installed skills.
 
 Use `caveman-review` for one-line feedback. See AGENTS.md for caveman levels.
 
+**Architecture binding:** read `.opencode/docs/trinity-architecture.md`.
+Gate = reject format `[ARCH]`.
+
 **Perf-reliability binding:** read `.opencode/docs/performance-reliability.md`.
 Gate = reject format `[PERF-REL]`.
 
@@ -25,19 +28,19 @@ dangling selectors?
 **2. HTML** — `html-css-best-practices` + `accessibility-wcag`. No `<div>`+ARIA
 faking native. No inline styles/scripts. Only CSS:
 `<link href="/src/styles/main.css">`. Only JS:
-`<script type="module" src="/src/main.js">`. Full rules: `frontend-dev.md`
-§HTML.
+`<script type="module" src="/src/main.js">`. Full rules:
+`trinity-architecture.md` §HTML.
 
 **3. CSS** — DESIGN.md compliance (palette, typo, motion). Anti-slop (asymmetry,
 grid-breaking). Modular layers + vars from `variables.css`. Nesting check (no
 flat repetition). No Inter/Roboto/system-ui. Animations in same file. Full
-rules: `frontend-dev.md` §CSS.
+rules: `trinity-architecture.md` §CSS.
 
 **4. SEO** — title <60ch, desc 150-160ch. All imgs have alt+wh. Valid JSON-LD.
 
 **5. JS** — `modern-javascript-patterns`. Declarative over imperative. try/catch
 on async. Sanitize DOM input. Event delegation (`.closest()`) over loop
-listeners. Full rules: `frontend-dev.md` §JS.
+listeners. Full rules: `trinity-architecture.md` §JS.
 
 ## Output
 
